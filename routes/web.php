@@ -14,5 +14,21 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('layout/app');
+    return view('pages/dashboard');
+});
+
+Route::get('/login', function () {
+    return view('pages/login');
+});
+
+Route::get('/settings', function () {
+    return view('pages/settings');
+});
+
+Route::get('/userInstituteList', function () {
+    return view('pages/userInstituteList');
+});
+
+Route::get('/instituteList', function () {
+    return view('pages/instituteList');
 });

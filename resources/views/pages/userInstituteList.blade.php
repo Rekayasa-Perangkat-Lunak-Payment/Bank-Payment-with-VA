@@ -5,6 +5,6 @@
 @section('page-title', 'Dashboard Overview')
 
 @section('content')
-    <h1>Welcome to the Dashboard!</h1>
-    <p>Here is your main content for the dashboard page.</p>
+    <h1>Welcome to the User Institute List!</h1>
+    <p>Here is your main content page.</p>
 @endsection
