@@ -32,3 +32,15 @@ Route::get('/userInstituteList', function () {
 Route::get('/instituteList', function () {
     return view('pages/instituteList');
 });
+
+Route::get('/instituteList', function () {
+    return view('pages/instituteList');
+});
+
+Route::get('/institute', function () {
+    return view('pages/institute');
+});
+
+Route::get('/userInstitute', function () {
+    return view('pages/userInstitute');
+});
