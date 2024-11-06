@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <div class="row align-items-center">
                         <div class="col-md-5 col-9">
-                            <h5 class="font-size-15 mb-3">Top Selling Product</h5>
+                            <h5 class="font-size-15 mb-3">List Bank</h5>
                         </div>
                         <!-- end col -->
                         <div class="col-md-7 col-3">
@@ -81,7 +81,7 @@
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Nike (Black)</h6>
+                                            <h6 class="mb-0">BNI</h6>
                                             <a href="" class="text-primary fw-bold font-size-11">ID
                                                 :
                                                 #NC1097</a>
@@ -89,149 +89,115 @@
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Total Sales</h6>
+                                            <h6 class="mb-0">Total User</h6>
                                             <p class="fw-bold mb-0">91</p>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="">
-                                            <h6 class="mb-0">Earning</h6>
-                                            <p class="fw-bold mb-0 text-success">
-                                                33%
-                                            </p>
-                                        </div>
                                     </td>
                                 </tr>
-                                <!-- end tr -->
                                 <tr>
                                     <td>
                                         <div class="avatar-sm">
                                             <span class="avatar-title rounded bg-light">
-                                                <img src="assets/images/product/img-9.png" class="avatar-sm"
+                                                <img src="assets/images/product/img-11.png" class="avatar-sm"
                                                     alt="Error">
                                             </span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Wool Runners (Pink)</h6>
+                                            <h6 class="mb-0">BNI</h6>
                                             <a href="" class="text-primary fw-bold font-size-11">ID
                                                 :
-                                                #NC1098</a>
+                                                #NC1097</a>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Total Sales</h6>
-                                            <p class="fw-bold mb-0">90</p>
+                                            <h6 class="mb-0">Total User</h6>
+                                            <p class="fw-bold mb-0">91</p>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="">
-                                            <h6 class="mb-0">Earning</h6>
-                                            <p class="fw-bold mb-0 text-success">
-                                                35%
-                                            </p>
-                                        </div>
                                     </td>
                                 </tr>
-                                <!-- end tr -->
                                 <tr>
                                     <td>
                                         <div class="avatar-sm">
                                             <span class="avatar-title rounded bg-light">
-                                                <img src="assets/images/product/img-1.png" class="avatar-sm"
+                                                <img src="assets/images/product/img-11.png" class="avatar-sm"
                                                     alt="Error">
                                             </span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Air Jordan 1 TS</h6>
+                                            <h6 class="mb-0">BNI</h6>
                                             <a href="" class="text-primary fw-bold font-size-11">ID
                                                 :
-                                                #NC1099</a>
+                                                #NC1097</a>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Total Sales</h6>
-                                            <p class="fw-bold mb-0">83</p>
+                                            <h6 class="mb-0">Total User</h6>
+                                            <p class="fw-bold mb-0">91</p>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="">
-                                            <h6 class="mb-0">Earning</h6>
-                                            <p class="fw-bold mb-0 text-success">
-                                                25%
-                                            </p>
-                                        </div>
                                     </td>
                                 </tr>
-                                <!-- end tr -->
                                 <tr>
                                     <td>
                                         <div class="avatar-sm">
                                             <span class="avatar-title rounded bg-light">
-                                                <img src="assets/images/product/img-4.png" class="avatar-sm"
+                                                <img src="assets/images/product/img-11.png" class="avatar-sm"
                                                     alt="Error">
                                             </span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Reebok</h6>
+                                            <h6 class="mb-0">BNI</h6>
                                             <a href="" class="text-primary fw-bold font-size-11">ID
                                                 :
-                                                #NC1100</a>
+                                                #NC1097</a>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Total Sales</h6>
-                                            <p class="fw-bold mb-0">79</p>
+                                            <h6 class="mb-0">Total User</h6>
+                                            <p class="fw-bold mb-0">91</p>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="">
-                                            <h6 class="mb-0">Earning</h6>
-                                            <p class="fw-bold mb-0 text-success">
-                                                22%
-                                            </p>
-                                        </div>
                                     </td>
                                 </tr>
-                                <!-- end tr -->
                                 <tr>
                                     <td>
                                         <div class="avatar-sm">
                                             <span class="avatar-title rounded bg-light">
-                                                <img src="assets/images/product/img-3.png" class="avatar-sm"
+                                                <img src="assets/images/product/img-11.png" class="avatar-sm"
                                                     alt="Error">
                                             </span>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Jordan Eclipse (Blue)</h6>
+                                            <h6 class="mb-0">BNI</h6>
                                             <a href="" class="text-primary fw-bold font-size-11">ID
                                                 :
-                                                #NC1101</a>
+                                                #NC1097</a>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="">
-                                            <h6 class="mb-0">Total Sales</h6>
-                                            <p class="fw-bold mb-0">76</p>
+                                            <h6 class="mb-0">Total User</h6>
+                                            <p class="fw-bold mb-0">91</p>
                                         </div>
                                     </td>
                                     <td>
-                                        <div class="">
-                                            <h6 class="mb-0">Earning</h6>
-                                            <p class="fw-bold mb-0 text-success">
-                                                30%
-                                            </p>
-                                        </div>
                                     </td>
                                 </tr>
                                 <!-- end tr -->

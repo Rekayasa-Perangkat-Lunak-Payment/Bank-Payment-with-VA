@@ -43,7 +43,7 @@
                                         placeholder="Enter your password">
                                 </div>
 
-                                <div class="form-group mt-3 text-start">
+                                <div class="form-group mt-3 text-start" href="/">
                                     <button class="btn btn-primary form-control" type="submit"> Log In </button>
                                 </div>
 

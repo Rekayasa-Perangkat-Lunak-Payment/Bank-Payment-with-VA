@@ -108,7 +108,7 @@
             </div>
             <!-- end row -->
 
-            <div class="card">
+            {{-- <div class="card">
                 <div class="card-body">
                     <div class="float-end d-none d-md-inline-block">
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -150,11 +150,11 @@
                     </div>
                 </div>
                 <!-- end cardbody -->
-            </div>
+            </div> --}}
             <!-- end card -->
         </div>
         <!-- end col -->
-        <div class="col-xl-4">
+        {{-- <div class="col-xl-4">
             <div class="card">
                 <div class="card-body">
                     <div class="float-end">
@@ -291,7 +291,7 @@
                 <!-- end cardbody -->
             </div>
             <!-- end card -->
-        </div>
+        </div> --}}
         <!-- end col -->
     </div>
     <!-- end row -->

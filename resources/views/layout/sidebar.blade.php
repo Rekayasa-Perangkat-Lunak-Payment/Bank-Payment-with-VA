@@ -31,7 +31,7 @@
                         </a>
                     </li>
                     <!-- end li -->
-                    <li>
+                    {{-- <li>
                         <a href="javascript: void(0);" class="has-arrow waves-effect">
                             <i class="ri-store-2-line"></i>
                             <span>Ecommerce</span>
@@ -46,7 +46,7 @@
                             <li><a href="ecommerce-shops.html">Shops</a></li>
                             <li><a href="ecommerce-add-product.html">Add Product</a></li>
                         </ul>
-                    </li>
+                    </li> --}}
                     <!-- end li -->       
                 </ul>
                 <!-- end ul -->
