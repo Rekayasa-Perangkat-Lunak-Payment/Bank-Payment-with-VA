@@ -6,15 +6,17 @@
 
                 <a href="index.html" class="logo logo-light">
                     <span class="logo-sm">
+                        {{-- logo closed --}}
                         {{-- <img src="assets/images/logo-dummin2.png" alt="logo-sm-light" height="22"> --}}
                         <span class="fs-4">
-                            Institute Pay
+                            IPay
                         </span>
                     </span>
                     <span class="logo-lg">
+                        {{-- logo open --}}
                         {{-- <img src="assets/images/logo-light.png" alt="logo-light" height="22"> --}}
-                        <span class="fs-4">
-                            Institute Pay
+                        <span class="fw-bolder fs-3 light">
+                            Insititute Pay
                         </span>
                     </span>
                 </a>

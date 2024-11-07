@@ -27,7 +27,7 @@
                     <li>
                         <a href="/instituteList" class=" waves-effect">
                             <i class="ri-chat-1-line"></i>
-                            <span>Institute List Bank</span>
+                            <span>Institute List</span>
                         </a>
                     </li>
                     <!-- end li -->

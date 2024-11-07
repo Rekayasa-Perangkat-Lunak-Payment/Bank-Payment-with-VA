@@ -25,24 +25,24 @@
                         </a>
                         <div class="dropdown-menu dropdown-menu-end">
                             <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item">Status</a>
+                            <a href="javascript:void(0);" class="dropdown-item">Institute</a>
                             <!-- item-->
-                            <a href="javascript:void(0);" class="dropdown-item">Profit</a>
+                            <a href="javascript:void(0);" class="dropdown-item">Status</a>
                             <!-- item-->
                             <a href="javascript:void(0);" class="dropdown-item">Action</a>
                         </div>
                     </div>
                     <!-- end dropdown -->
-                    <h4 class="card-title mb-4">Latest Transactions</h4>
+                    {{-- <h4 class="card-title mb-4">Latest Transactions</h4> --}}
                     <div class="table-responsive">
                         <table class="table table-centered border table-nowrap mb-0"
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Customer ID</th>
-                                    <th>Billing Name</th>
-                                    <th>Price</th>
-                                    <th>Status</th>
+                                    <th>User ID</th>
+                                    <th>Name</th>
+                                    <th>Institute</th>
+                                    {{-- <th>Status</th> --}}
                                     <th colspan="2">Action</th>
                                 </tr>
                                 <!-- end tr -->
@@ -62,23 +62,23 @@
                                             </div>
                                             <div>
                                                 <h5 class="font-size-13 text-truncate mb-1"><a href="#"
-                                                        class="text-dark">Julia Fox</a>
+                                                        class="text-dark">Shinta Rahayu</a>
                                                 </h5>
                                                 <p class="text-muted mb-0 font-size-11 text-uppercase">
-                                                    Grenada</p>
+                                                    Biro Keuangan</p>
                                             </div>
                                         </div>
                                     </td>
 
                                     <td>
-                                        <h6 class="mb-1 font-size-13">$32,960</h6>
+                                        <h6 class="mb-1 font-size-13">SMA Negeri 1 Kasihan</h6>
                                         <p class="text-success text-uppercase  mb-0 font-size-11"><i
-                                                class="mdi mdi-circle-medium"></i>paid</p>
+                                                class="mdi mdi-circle-medium"></i>Active</p>
                                     </td>
-                                    <td>
+                                    {{-- <td>    
                                         <h6 class="mb-1 font-size-13">Stock</h6>
                                         <p class="text-primary mb-0 font-size-11">ORDS- 2546881</p>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <ul class="d-flex list-inline mb-0">
                                             <li class="list-inline-item">
@@ -94,7 +94,7 @@
                                                 <a href="#"
                                                     class="btn btn-light p-0 avatar-xs d-block rounded-circle">
                                                     <span class="avatar-title bg-transparent text-body">
-                                                        <i class="mdi mdi-heart-outline"></i>
+                                                        <i class="mdi mdi-bookmark-outline"></i>
                                                     </span>
                                                 </a>
                                             </li>
@@ -121,22 +121,22 @@
                                             </div>
                                             <div>
                                                 <h5 class="font-size-13 text-truncate mb-1"><a href="#"
-                                                        class="text-dark">Max Jazz</a>
+                                                        class="text-dark">John Sutopo</a>
                                                 </h5>
                                                 <p class="text-muted mb-0 font-size-11 text-uppercase">
-                                                    Vatican City</p>
+                                                    Kepala Sekolah  </p>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <h6 class="mb-1 font-size-13">$30,785</h6>
-                                        <p class="text-success text-uppercase mb-0 font-size-11"><i
-                                                class="mdi mdi-circle-medium "></i>paid</p>
+                                        <h6 class="mb-1 font-size-13">Universitas Mundur Gak Ya</h6>
+                                        <p class="text-warning text-uppercase mb-0 font-size-11"><i
+                                                class="mdi mdi-circle-medium "></i>Inactive</p>
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         <h6 class="mb-1 font-size-13">Out of Stock</h6>
                                         <p class="text-primary mb-0 font-size-11">ORDS- 2546882</p>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <ul class="d-flex list-inline mb-0">
                                             <li class="list-inline-item">
@@ -152,7 +152,7 @@
                                                 <a href="#"
                                                     class="btn btn-light p-0 avatar-xs d-block rounded-circle">
                                                     <span class="avatar-title bg-transparent text-body">
-                                                        <i class="mdi mdi-heart-outline"></i>
+                                                        <i class="mdi mdi-bookmark-outline"></i>
                                                     </span>
                                                 </a>
                                             </li>
@@ -167,7 +167,7 @@
                                     </td>
                                 </tr>
                                 <!-- end /tr -->
-                                <tr>
+                                {{-- <tr>
                                     <td>
                                         #DD4953
                                         <p class="text-muted mb-0 font-size-11">26-03-2021</p>
@@ -224,9 +224,9 @@
                                         </div>
                                     </td>
 
-                                </tr>
+                                </tr> --}}
                                 <!-- end /tr -->
-                                <tr>
+                                {{-- <tr>
                                     <td>
                                         #DD4954
                                         <p class="text-muted mb-0 font-size-11">27-03-2021</p>
@@ -282,9 +282,9 @@
                                                 class="mdi mdi-arrow-right ms-1"></i>
                                         </div>
                                     </td>
-                                </tr>
+                                </tr> --}}
                                 <!-- end /tr -->
-                                <tr>
+                                {{-- <tr>
                                     <td>
                                         #DD4955
                                         <p class="text-muted mb-0 font-size-11">29-03-2021</p>
@@ -336,12 +336,12 @@
                                             <!-- end li -->
                                         </ul>
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         <div class="btn btn-soft-primary btn-sm">View more<i
                                                 class="mdi mdi-arrow-right ms-1"></i>
                                         </div>
-                                    </td>
-                                </tr>
+                                    </td> --}}
+                                {{-- </tr> --}}
                                 <!-- end /tr -->
                             </tbody>
                             <!-- end tbody -->
