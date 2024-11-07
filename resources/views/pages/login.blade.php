@@ -5,9 +5,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Bootstrap demo</title>
-     <!-- App css -->
-     <link href="{{asset('assets/css/bootstrap.css')}}" rel="stylesheet" />
-     <link href="{{asset('assets/css/app.css')}}" rel="stylesheet" type="text/css" />
+    <!-- App css -->
+    <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet" />
+    <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet" type="text/css" />
 </head>
 
 <body>
@@ -16,17 +16,12 @@
             <div class="row justify-content-center">
                 <div class="col-md-8 col-lg-6 col-xl-5">
                     <div class="card">
-
                         <div class="card-body p-4">
-
                             <div class="text-center w-75 m-auto">
-                                <a href="index.html">
-                                    <span><img src="{{asset('assets/images/logo-dummin2.png')}}" alt="" height="150"></span>
-                                </a>
-                                <p class="text-muted mb-4 mt-3">Enter your email address and password to access admin
-                                    panel.</p>
+                                <span><img src="{{ asset('assets/images/logo-dark.png') }}" alt=""
+                                        height="150" style="object-fit: cover"></span>
+                                <p class="text-muted mb-4 mt-3">Enter your username and password.</p>
                             </div>
-
                             <h5 class="auth-title text-center">Sign In</h5>
 
                             <form action="#">
@@ -64,7 +59,7 @@
     <!-- end page -->
 
     <!-- App js -->
-    <script src="{{asset('assets/js/app.min.js')}}"></script>
+    <script src="{{ asset('assets/js/app.min.js') }}"></script>
 </body>
 
 </html>

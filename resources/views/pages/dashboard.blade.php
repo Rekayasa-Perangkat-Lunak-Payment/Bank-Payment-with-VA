@@ -14,13 +14,12 @@
         <!-- end col -->
     </div>
 
-
     <div class="row">
         <div class="col-xl-8">
             <div class="row">
-                <div class="col-xl-4 col-md-6">
-                    <div class="card">
-                        <div class="card-body p-0">
+                {{-- <div class="col-xl-4 col-md-6"> --}}
+                    {{-- <div class="card"> --}}
+                        {{-- <div class="card-body p-0">
                             <div class="p-4">
                                 <div class="d-flex">
                                     <div class="flex-1">
@@ -38,19 +37,19 @@
                             <div>
                                 <div id="visitors_charts" class="apex-charts" dir="ltr"></div>
                             </div>
-                        </div>
+                        </div> --}}
                         <!-- end cardbody -->
-                    </div>
+                    {{-- </div> --}}
                     <!-- end card -->
-                </div>
+                {{-- </div> --}}
                 <!-- end col -->
-                <div class="col-xl-4 col-md-6">
+                <div class="col-xl-6 col-md-6">
                     <div class="card">
                         <div class="card-body p-0">
                             <div class="p-4">
                                 <div class="d-flex">
                                     <div class="flex-1">
-                                        <h3 class="mb-3">$<span class="counter_value" data-target="97450">0</span></h3>
+                                        <h3 class="mb-3">Rp. <span class="counter_value" data-target="125000000"></span></h3>
                                     </div>
                                     <div class="">
                                         <p class="badge bg-primary font-size-12 mb-0">Monthly</p>
@@ -80,7 +79,8 @@
                     <!-- end card -->
                 </div>
                 <!-- end col -->
-                <div class="col-xl-4 col-md-6">
+
+                {{-- <div class="col-xl-4 col-md-6">
                     <div class="card">
                         <div class="card-body p-0">
                             <div class="p-4">
@@ -103,7 +103,7 @@
                         <!-- end cardbody -->
                     </div>
                     <!-- end card -->
-                </div>
+                </div> --}}
                 <!-- end col -->
             </div>
             <!-- end row -->
