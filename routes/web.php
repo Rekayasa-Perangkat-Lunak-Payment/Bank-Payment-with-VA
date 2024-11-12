@@ -33,10 +33,6 @@ Route::get('/instituteList', function () {
     return view('pages/instituteList');
 });
 
-Route::get('/instituteList', function () {
-    return view('pages/instituteList');
-});
-
 Route::get('/institute', function () {
     return view('pages/institute');
 });
