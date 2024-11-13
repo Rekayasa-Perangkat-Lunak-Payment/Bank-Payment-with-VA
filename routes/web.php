@@ -25,6 +25,10 @@ Route::get('/settings', function () {
     return view('pages/settings');
 });
 
+Route::get('/about', function () {
+    return view('pages/about');
+});
+
 Route::get('/userInstituteList', function () {
     return view('pages/userInstituteList');
 });
