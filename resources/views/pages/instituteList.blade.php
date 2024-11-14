@@ -70,7 +70,7 @@
                         <table class="table table-nowrap mb-0">
                             <thead>
                                 <tr>
-                                    {{-- <th scope="col">Logo</th> --}}
+                                    <th scope="col">ID</th>
                                     <th scope="col">Name</th>
                                     {{-- <th scope="col">Address</th> --}}
                                     <th scope="col">Contact</th>
@@ -89,6 +89,11 @@
                                             </span>
                                         </div>
                                     </td> --}}
+                                    <td>
+                                        <div class="">
+                                            <h6 class="mb-0">INS001</h6>
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="">
                                             <h6 class="mb-0">SD Negeri Kebonjati 1</h6>
@@ -139,6 +144,11 @@
                                     </td> --}}
                                     <td>
                                         <div class="">
+                                            <h6 class="mb-0">INS002</h6>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="">
                                             <h6 class="mb-0">Universitas Gadjah Mulya</h6>
                                             <a href="" class="text-primary fw-bold font-size-11">NPSN: 36808211</a>
                                         </div>
@@ -184,6 +194,11 @@
                                             </span>
                                         </div>
                                     </td> --}}
+                                    <td>
+                                        <div class="">
+                                            <h6 class="mb-0">INS003</h6>
+                                        </div>
+                                    </td>
                                     <td>
                                         <div class="">
                                             <h6 class="mb-0">SMA Budi Dipake Terus</h6>
