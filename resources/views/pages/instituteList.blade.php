@@ -70,9 +70,9 @@
                         <table class="table table-nowrap mb-0">
                             <thead>
                                 <tr>
-                                    <th scope="col">Logo</th>
+                                    {{-- <th scope="col">Logo</th> --}}
                                     <th scope="col">Name</th>
-                                    <th scope="col">Address</th>
+                                    {{-- <th scope="col">Address</th> --}}
                                     <th scope="col">Contact</th>
                                     <th scope="col">Admin</th>
                                     <th scope="col">Student</th>
@@ -81,27 +81,27 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>
+                                    {{-- <td>
                                         <div class="avatar-sm">
                                             <span class="avatar-title rounded bg-light">
                                                 <img src="assets/images/product/img-11.png" class="avatar-sm"
                                                     alt="Error">
                                             </span>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <div class="">
                                             <h6 class="mb-0">SD Negeri Kebonjati 1</h6>
                                             <a href="" class="text-primary fw-bold font-size-11">NPSN: 73703453</a>
                                         </div>
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         <div class="">
-                                            {{-- <h6 class="mb-0">Total Admin</h6> --}}
+                                            <h6 class="mb-0">Total Admin</h6>
                                             <p class="fw-bold mb-0">Jl. Raya Kebonjati No. 1</p>
                                             <p class="fw-bold mb-0">Sumedang, Sumatera Barat</p>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <div class="">
                                             {{-- <h6 class="mb-0">Total Admin</h6> --}}
@@ -129,27 +129,27 @@
                                 </tr>
 
                                 <tr>
-                                    <td>
+                                    {{-- <td>
                                         <div class="avatar-sm">
                                             <span class="avatar-title rounded bg-light">
                                                 <img src="assets/images/product/img-11.png" class="avatar-sm"
                                                     alt="Error">
                                             </span>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <div class="">
                                             <h6 class="mb-0">Universitas Gadjah Mulya</h6>
                                             <a href="" class="text-primary fw-bold font-size-11">NPSN: 36808211</a>
                                         </div>
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         <div class="">
-                                            {{-- <h6 class="mb-0">Total Admin</h6> --}}
+                                            <h6 class="mb-0">Total Admin</h6>
                                             <p class="fw-bold mb-0">Jl. Suzuki Itada</p>
                                             <p class="fw-bold mb-0">Slebewe, Niagara</p>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <div class="">
                                             {{-- <h6 class="mb-0">Total Admin</h6> --}}
@@ -176,27 +176,27 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>
+                                    {{-- <td>
                                         <div class="avatar-sm">
                                             <span class="avatar-title rounded bg-light">
                                                 <img src="assets/images/product/img-11.png" class="avatar-sm"
                                                     alt="Error">
                                             </span>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <div class="">
                                             <h6 class="mb-0">SMA Budi Dipake Terus</h6>
                                             <a href="" class="text-primary fw-bold font-size-11">NPSN: 3453234</a>
                                         </div>
                                     </td>
-                                    <td>
+                                    {{-- <td>
                                         <div class="">
-                                            {{-- <h6 class="mb-0">Total Admin</h6> --}}
+                                            <h6 class="mb-0">Total Admin</h6>
                                             <p class="fw-bold mb-0">Jl. Mundur Terus</p>
                                             <p class="fw-bold mb-0">Gamaju, Jawa Koentji</p>
                                         </div>
-                                    </td>
+                                    </td> --}}
                                     <td>
                                         <div class="">
                                             {{-- <h6 class="mb-0">Total Admin</h6> --}}
