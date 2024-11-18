@@ -17,16 +17,20 @@ class InstituteController extends Controller
 
     public function index()
     {
-        // Panggil API untuk mendapatkan daftar institusi
         $response = Http::get("{$this->apiBaseUrl}/institutions");
 
+        // Log response status and body for debugging
+        // dd($response->status(), $response->body());
+
         if ($response->successful()) {
-            $institutes = $response->json(); // Ambil data JSON dari API
-            return view('institute', compact('institutes'));
+            $institutes = $response->json();
+            // dd($institutes); // This will dump the data to help you debug.
+            return view('pages/institute', compact('institutes'));
         }
 
         return redirect()->back()->withErrors('Gagal mendapatkan data institusi.');
     }
+
 
     public function create()
     {

@@ -22,12 +22,12 @@
                         @forelse ($institutes as $index => $institute)
                             <tr>
                                 <td>{{ $index + 1 }}</td>
-                                <td>{{ $institute->name }}</td>
-                                <td>{{ $institute->address }}</td>
-                                <td>{{ $institute->email }}</td>
+                                <td>{{ $institute['name'] }}</td>
+                                <td>{{ $institute['address'] }}</td>
+                                <td>{{ $institute['email'] }}</td>
                                 <td>
-                                    <a href="{{ route('institute.edit', $institute->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                    <form action="{{ route('institute.destroy', $institute->id) }}" method="POST" class="d-inline"
+                                    <a href="{{ route('institute.edit', $institute['id']) }}" class="btn btn-warning btn-sm">Edit</a>
+                                    <form action="{{ route('institute.destroy', $institute['id']) }}" method="POST" class="d-inline"
                                           onsubmit="return confirm('Apakah Anda yakin ingin menghapus institusi ini?')">
                                         @csrf
                                         @method('DELETE')
