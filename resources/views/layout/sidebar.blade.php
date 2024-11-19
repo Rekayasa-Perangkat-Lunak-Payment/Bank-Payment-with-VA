@@ -15,7 +15,7 @@
                 </li>
 
                 <!-- User Institute List (Only for Institution Admin) -->
-                @if(auth()->user()->institutionAdmin)
+                @if(auth()->check() && auth()->user()->institutionAdmin !== null)
                     <li>
                         <a href="/userInstituteList" class="waves-effect">
                             <i class="fas fa-align-justify"></i>
@@ -32,7 +32,7 @@
                 @endif
 
                 <!-- Bank Transactions (Only for Bank Admin) -->
-                @if(auth()->user()->bankAdmin)
+                @if(auth()->check() && auth()->user()->bankAdmin !== null)
                     <li>
                         <a href="/bankTransactions" class="waves-effect">
                             <i class="ri-wallet-line"></i>
