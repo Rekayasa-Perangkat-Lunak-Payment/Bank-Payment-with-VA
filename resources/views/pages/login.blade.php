@@ -24,25 +24,33 @@
                             </div>
                             <h5 class="auth-title text-center">Sign In</h5>
 
-                            <form action="#">
-
+                            <form action="{{ route('login') }}" method="POST">
+                                @csrf
                                 <div class="form-group mb-3">
                                     <label for="emailaddress">Email address</label>
-                                    <input class="form-control" type="email" id="emailaddress" required=""
+                                    <input class="form-control" type="email" id="emailaddress" name="email" required
                                         placeholder="Enter your email">
                                 </div>
 
                                 <div class="form-group mb-3">
                                     <label for="password">Password</label>
-                                    <input class="form-control" type="password" required="" id="password"
+                                    <input class="form-control" type="password" id="password" name="password" required
                                         placeholder="Enter your password">
                                 </div>
 
-                                <div class="form-group mt-3 text-start" href="/">
-                                    <button class="btn btn-primary form-control" type="submit"> Log In </button>
+                                <div class="form-group mt-3 text-start">
+                                    <button class="btn btn-primary form-control" type="submit">Log In</button>
                                 </div>
-
                             </form>
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
 
                         </div> <!-- end card-body -->

@@ -15,11 +15,11 @@ use App\Http\Controllers\InstituteController;
 */
 
 Route::get('/', function () {
-    return view('pages/dashboard');
+    return view('pages/login');
 });
 
-Route::get('/login', function () {
-    return view('pages/login');
+Route::get('/dashboard', function () {
+    return view('pages/dashboard');
 });
 
 Route::get('/settings', function () {
