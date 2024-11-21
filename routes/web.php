@@ -47,3 +47,7 @@ Route::resource('institute', InstituteController::class);
 Route::get('/userInstitute', function () {
     return view('pages/userInstitute');
 });
+
+Route::get('/transactions', function () {
+    return view('pages/transactions');
+});
