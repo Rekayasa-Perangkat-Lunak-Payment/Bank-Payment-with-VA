@@ -1,10 +1,9 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\InstituteController;
 
 /*
-|--------------------------------------------------------------------------
+|---------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
 |
@@ -14,47 +13,54 @@ use App\Http\Controllers\InstituteController;
 |
 */
 
-Route::get('/', function () {
-    return view('pages/login');
-});
+Route::prefix('pages')->group(function () {
 
-Route::get('/login', function () {
-    return view('pages/login');
-});
+    // Login page route
+    Route::get('/', function () {
+        return view('pages/login');
+    });
 
-Route::get('/dashboard', function () {
-    return view('pages/dashboard');
-});
+    Route::get('/login', function () {
+        return view('pages/login');
+    });
 
-Route::get('/settings', function () {
-    return view('pages/settings');
-});
+    // Dashboard page route
+    Route::get('/dashboard', function () {
+        return view('pages/dashboard');
+    });
 
-Route::get('/userInstituteList', function () {
-    return view('pages/userInstituteList');
-});
+    // Settings page route
+    Route::get('/settings', function () {
+        return view('pages/settings');
+    });
 
-Route::get('/instituteList', function () {
-    return view('pages/instituteList');
-});
+    // User Institute List page route
+    Route::get('/userInstituteList', function () {
+        return view('pages/userInstituteList');
+    });
 
-// Route::get('/institute', function () {
-//     return view('pages/institute');
-// });
+    // Institute List page route
+    Route::get('/instituteList', function () {
+        return view('pages/instituteList');
+    });
 
-Route::resource('institute', InstituteController::class);
+    // User Institute page route
+    Route::get('/userInstitute', function () {
+        return view('pages/userInstitute');
+    });
 
-Route::get('/userInstitute', function () {
-    return view('pages/userInstitute');
-});
+    // Transactions page route
+    Route::get('/transactions', function () {
+        return view('pages/transactions');
+    });
 
-Route::get('/transactions', function () {
-    return view('pages/transactions');
-});
+    // Profile page route, protected by auth middleware
+    Route::middleware('auth')->group(function () {
+        Route::view('/dashboard', 'pages/dashboard')->name('dashboard');
+        Route::view('/profile', 'pages/profile')->name('profile');
+    });
 
-Route::view('/login', 'auth.login')->name('login');
-Route::middleware('auth')->group(function () {
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
-    Route::view('/profile', 'profile')->name('profile');
+    // Institute resource routes
+    Route::resource('institute', InstituteController::class);
 });
 
