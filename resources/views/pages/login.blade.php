@@ -4,8 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Bootstrap demo</title>
-    <!-- App css -->
+    <title>Login</title>
     <link href="{{ asset('assets/css/bootstrap.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/app.css') }}" rel="stylesheet" type="text/css" />
 </head>
@@ -18,16 +17,14 @@
                     <div class="card">
                         <div class="card-body p-4">
                             <div class="text-center w-75 m-auto">
-                                <span><img src="{{ asset('assets/images/logo-dark.png') }}" alt=""
-                                        height="150" style="object-fit: cover"></span>
-                                <p class="text-muted mb-4 mt-3">Enter your username and password.</p>
+                                <img src="{{ asset('assets/images/logo-dark.png') }}" alt="Logo" height="150"
+                                    style="object-fit: cover">
+                                <p class="text-muted mb-4 mt-3">Please log in with your email and password.</p>
                             </div>
                             <h5 class="auth-title text-center">Sign In</h5>
-
-                            <form action="{{ route('login') }}" method="POST">
-                                @csrf
+                            <form id="loginForm">
                                 <div class="form-group mb-3">
-                                    <label for="emailaddress">Email address</label>
+                                    <label for="emailaddress">Email Address</label>
                                     <input class="form-control" type="email" id="emailaddress" name="email" required
                                         placeholder="Enter your email">
                                 </div>
@@ -42,32 +39,42 @@
                                     <button class="btn btn-primary form-control" type="submit">Log In</button>
                                 </div>
                             </form>
-                            @if ($errors->any())
-                                <div class="alert alert-danger">
-                                    <ul>
-                                        @foreach ($errors->all() as $error)
-                                            <li>{{ $error }}</li>
-                                        @endforeach
-                                    </ul>
-                                </div>
-                            @endif
 
-
-                        </div> <!-- end card-body -->
+                            <div id="errorMessage" class="alert alert-danger mt-3 d-none"></div>
+                        </div>
                     </div>
-                    <!-- end card -->
-
-
-                </div> <!-- end col -->
+                </div>
             </div>
-            <!-- end row -->
         </div>
-        <!-- end container -->
     </div>
-    <!-- end page -->
 
-    <!-- App js -->
     <script src="{{ asset('assets/js/app.min.js') }}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault(); // Prevent default form submission
+
+            const email = document.getElementById('emailaddress').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await axios.post('http://127.0.0.1:8000/api/login', {
+                    email: email,
+                    password: password
+                });
+
+                // If successful, save the token and redirect
+                localStorage.setItem('authToken', response.data.data.token);
+                window.location.href = '/dashboard'; // Redirect to the dashboard page
+
+            } catch (error) {
+                // Handle errors and display them
+                const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
+                alert(errorMessage);
+            }
+        });
+    </script>
+
 </body>
 
 </html>

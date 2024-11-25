@@ -51,3 +51,10 @@ Route::get('/userInstitute', function () {
 Route::get('/transactions', function () {
     return view('pages/transactions');
 });
+
+Route::view('/login', 'auth.login')->name('login');
+Route::middleware('auth')->group(function () {
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
+    Route::view('/profile', 'profile')->name('profile');
+});
+
