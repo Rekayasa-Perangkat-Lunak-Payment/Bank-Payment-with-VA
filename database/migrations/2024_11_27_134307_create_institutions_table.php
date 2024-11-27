@@ -15,6 +15,16 @@ class CreateInstitutionsTable extends Migration
     {
         Schema::create('institutions', function (Blueprint $table) {
             $table->id();
+            $table->string('npsn')->unique();
+            $table->string('name');
+            $table->string('status');
+            $table->string('educational_level');
+            $table->string('address');
+            $table->string('phone')->nullable();
+            $table->string('email')->unique();
+            $table->string('account_number')->unique();
+            $table->integer('balance')->default(0);
+            $table->boolean('is_deleted')->default(false);
             $table->timestamps();
         });
     }
