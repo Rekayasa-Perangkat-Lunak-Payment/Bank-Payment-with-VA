@@ -14,8 +14,21 @@ class CreateStudentsTable extends Migration
     public function up()
     {
         Schema::create('students', function (Blueprint $table) {
-            $table->id();
-            $table->timestamps();
+            Schema::create('students', function (Blueprint $table) {
+                $table->id();
+                $table->unsignedBigInteger('institution_id');
+                $table->string('student_id');
+                $table->string('name');
+                $table->enum('gender', ['Pria', 'Wanita'])->default('Pria');
+                $table->char('year', 4);
+                $table->integer('balance')->default(0);
+                $table->string('password');
+                $table->string('major');
+                $table->boolean('is_deleted')->default(false);
+                $table->timestamps();
+    
+                $table->foreign('institution_id')->references('id')->on('institutions')->onDelete('cascade');
+            });
         });
     }
 
