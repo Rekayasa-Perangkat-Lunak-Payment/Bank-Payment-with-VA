@@ -15,7 +15,12 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('virtual_account_id');
+            $table->date('transaction_date');
+            $table->decimal('total', 10, 2);
             $table->timestamps();
+
+            $table->foreign('virtual_account_id')->references('id')->on('virtual_accounts')->onDelete('cascade');
         });
     }
 

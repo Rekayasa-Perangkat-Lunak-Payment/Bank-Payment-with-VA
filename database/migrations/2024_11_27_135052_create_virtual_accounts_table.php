@@ -15,7 +15,14 @@ class CreateVirtualAccountsTable extends Migration
     {
         Schema::create('virtual_accounts', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('invoice_id');
+            $table->string('virtual_account_number')->unique();
+            $table->dateTime('expired_at');
+            $table->boolean('is_active')->default(true);
+            $table->decimal('total_amount', 10, 2);
             $table->timestamps();
+
+            $table->foreign('invoice_id')->references('id')->on('invoice')->onDelete('cascade');
         });
     }
 
