@@ -2,6 +2,12 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\TransactionController;
+use App\Http\Controllers\InstitutionController;
+use App\Http\Controllers\StudentController;
+use App\Http\Controllers\InstitutionAdminController;
+use App\Http\Controllers\BankAdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +20,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+// User route with API authentication middleware
+Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/login', [UserController::class, 'login']);
+
+Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+Route::get('/profile', [UserController::class, 'profile'])->middleware('auth:sanctum');
+Route::post('/update-profile', [UserController::class, 'updateProfile'])->middleware('auth:sanctum');
+Route::post('/register', [UserController::class, 'register']);
+
+Route::apiResource('transactions', TransactionController::class);
+Route::apiResource('institutions', InstitutionController::class);
+Route::apiResource('students', StudentController::class);
+Route::apiResource('institution-admins', InstitutionAdminController::class);
+Route::apiResource('bank-admins', BankAdminController::class);
