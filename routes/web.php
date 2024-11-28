@@ -36,6 +36,14 @@ Route::get('/userInstituteList', function () {
     return view('pages/userInstituteList');
 });
 
+Route::get('/addInstitute', function () {
+    return view('pages/addInstitute');
+});
+
+Route::get('/institute', function () {
+    return view('pages/institute');
+});
+
 // Institute List page route
 Route::get('/instituteList', function () {
     return view('pages/instituteList');
@@ -56,6 +64,3 @@ Route::middleware('auth')->group(function () {
     Route::view('/dashboard', 'pages/dashboard')->name('dashboard');
     Route::view('/profile', 'pages/profile')->name('profile');
 });
-
-// Institute resource routes
-Route::resource('institute', InstituteController::class);
