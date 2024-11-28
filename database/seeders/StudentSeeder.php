@@ -21,6 +21,10 @@ class StudentSeeder extends Seeder
                 'institution_id' => 1,
                 'student_id' => $faker->ean8,
                 'name' => $faker->name,
+                'year' => $faker->year,
+                'email' => $faker->email,
+                'major' => $faker->jobTitle,
+                'phone' => $faker->phoneNumber,
                 'password' => $faker->ean8
             ]);
         };

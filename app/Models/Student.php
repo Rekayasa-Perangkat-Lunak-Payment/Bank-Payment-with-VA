@@ -16,6 +16,8 @@ class Student extends Model
         'name',
         'gender',
         'year',
+        'phone',
+        'email',
         'balance',
         'password',
         'major',
