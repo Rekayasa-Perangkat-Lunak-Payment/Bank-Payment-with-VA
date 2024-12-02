@@ -63,18 +63,27 @@
                     password: password
                 });
 
-                // If successful, save the token and redirect
-                localStorage.setItem('authToken', response.data.data.token);
-                window.location.href = '/dashboard'; // Redirect to the dashboard page
+                if (response.data && response.data.data && response.data.data.token) {
+                    localStorage.setItem('authToken', response.data.data.token);
+                    window.location.href = '/dashboard'; // Redirect to dashboard
+                } else {
+                    alert('Unexpected response format.');
+                }
 
             } catch (error) {
-                // Handle errors and display them
-                const errorMessage = error.response?.data?.message || 'Login failed. Please try again.';
-                alert(errorMessage);
+                console.error('Error during login:', error);
+
+                if (error.response) {
+                    const errorMessage = error.response.data.message || 'Login failed. Please try again.';
+                    alert(errorMessage);
+                } else if (error.request) {
+                    alert('No response from server. Please try again.');
+                } else {
+                    alert('Error during login. Please try again.');
+                }
             }
         });
     </script>
-
 </body>
 
 </html>

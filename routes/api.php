@@ -20,20 +20,21 @@ use App\Http\Controllers\BankAdminController;
 |
 */
 
-// User route with API authentication middleware
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth.token')->get('/profile', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::post('/login', [UserController::class, 'login']);
-
-Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
-Route::get('/profile', [UserController::class, 'profile'])->middleware('auth:sanctum');
-Route::post('/update-profile', [UserController::class, 'updateProfile'])->middleware('auth:sanctum');
-Route::post('/register', [UserController::class, 'register']);
+// Route::post('/login', [UserController::class, 'login'])->name('login');
+// Route::post('/logout', [UserController::class, 'logout'])->middleware('auth.token');
+// Route::get('/profile', [UserController::class, 'profile'])->middleware('auth.token');
+// Route::post('/update-profile', [UserController::class, 'updateProfile'])->middleware('auth.token');
+// Route::post('/register', [UserController::class, 'register']);
 
 Route::apiResource('transactions', TransactionController::class);
 Route::apiResource('institutions', InstitutionController::class);
 Route::apiResource('students', StudentController::class);
-Route::apiResource('institution-admins', InstitutionAdminController::class);
-Route::apiResource('bank-admins', BankAdminController::class);
+
+// Route::prefix('admin')->group(function () {
+//     Route::apiResource('institution-admins', InstitutionAdminController::class);
+//     Route::apiResource('bank-admins', BankAdminController::class);
+// });

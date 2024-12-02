@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\Hash;
+
 class UserController extends Controller
 {
     /**
@@ -13,34 +13,36 @@ class UserController extends Controller
      */
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-
-        // Retrieve the user by email
+        // Find the user by email
         $user = User::where('email', $request->email)->first();
-        dd($user);
-        if (!$user || !Hash::check($request->password, $user->password)) {
+
+        if (!$user) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Invalid email or password'
+                'message' => 'User not found',
+            ], 404);
+        }
+
+        // Check the password using the appropriate method
+        if (!Hash::check($request->password, $user->password)) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Invalid email or password',
             ], 401);
         }
 
-        // If user exists and password is correct, generate token
+        // Generate a token after successful login
         $token = $user->createToken('authToken')->plainTextToken;
 
+        // Successful login
         return response()->json([
             'status' => 'success',
             'message' => 'Login successful',
             'data' => [
-                'user' => $user,
                 'token' => $token
             ]
         ]);
     }
-
 
     /**
      * Handle user logout.
@@ -108,7 +110,7 @@ class UserController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => bcrypt($request->password), // bcrypt() for hashing
         ]);
 
         $token = $user->createToken('authToken')->plainTextToken;
