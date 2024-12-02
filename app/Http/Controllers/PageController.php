@@ -36,8 +36,8 @@ class PageController extends Controller
         return view('pages.instituteList');
     }
 
-    public function institutePage(){
-        return view('pages.institute');
+    public function institutePage($id){
+        return view('pages.institute', compact('id'));
     }
 
     public function addInstitutePage(){

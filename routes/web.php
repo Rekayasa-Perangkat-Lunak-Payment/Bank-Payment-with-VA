@@ -11,5 +11,5 @@ Route::get('/dashboard', [PageController::class, 'dashboardPage']);
 Route::get('/settings', [PageController::class, 'settingsPage']);
 Route::get('/instituteList', [PageController::class, 'instituteListPage']);
 Route::get('/userInstituteList', [PageController::class, 'userInstituteListPage']);
-Route::get('/institute', [PageController::class, 'institutePage']);
+Route::get('/institute/{id}', [PageController::class, 'institutePage']);
 Route::get('/addInstitute', [PageController::class, 'addInstitutePage']);

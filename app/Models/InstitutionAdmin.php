@@ -20,4 +20,9 @@ class InstitutionAdmin extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class);
+    }
 }

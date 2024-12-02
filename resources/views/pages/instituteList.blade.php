@@ -52,14 +52,9 @@
         });
 
         function fetchInstitutes() {
-            console.log('Fetching institutes...'); // Debugging awal
             fetch('http://localhost:8000/api/institutions')
-                .then(response => {
-                    console.log('Response status:', response.status); // Debug status
-                    return response.json();
-                })
+                .then(response => response.json())
                 .then(data => {
-                    console.log('Fetched data:', data); // Debug isi data
                     const tableBody = document.getElementById('institute-table-body');
                     tableBody.innerHTML = '';
 
@@ -79,18 +74,23 @@
                             <p>${institute.phone}</p>
                         </div>
                     </td>
-                    <td><p class="fw-bold mb-0">1</p></td>
-                    <td><p class="fw-bold mb-0">2</p></td>
+                    <td><p class="fw-bold mb-0">${institute.admins_count}</p></td>
+                    <td><p class="fw-bold mb-0">${institute.students_count}</p></td>
                     <td>
-                        <button type="button" class="btn btn-primary btn-sm">Read More</button>
+                        <button type="button" class="btn btn-primary btn-sm" 
+                                onclick="loadProfile(${institute.id})">Read More</button>
                     </td>
                 `;
                         tableBody.appendChild(row);
                     });
                 })
                 .catch(error => {
-                    console.error('Error during fetch:', error); // Debug error
+                    console.error('Error during fetch:', error);
                 });
+        }
+
+        function loadProfile(id) {
+            window.location.href = `/institute/${id}`;
         }
     </script>
 @endsection

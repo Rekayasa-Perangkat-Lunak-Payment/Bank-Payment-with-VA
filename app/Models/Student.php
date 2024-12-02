@@ -28,4 +28,9 @@ class Student extends Model
     {
         $this->attributes['password'] = Hash::make($value);
     }
+
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class);
+    }
 }

@@ -20,4 +20,14 @@ class Institution extends Model
         'email',
         'account_number',
     ];
+
+    public function admins()
+    {
+        return $this->hasMany(InstitutionAdmin::class);
+    }
+
+    public function students()
+    {
+        return $this->hasMany(Student::class);
+    }
 }
