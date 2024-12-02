@@ -93,7 +93,6 @@
 
             // Make API call
             fetch('http://localhost:8000/api/institutions', {
-                    mode: 'no-cors',
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -105,7 +104,7 @@
                 .then(data => {
                     if (data.message === 'Institute created successfully') {
                         // Redirect to instituteList page
-                        window.location.href = '/pages/instituteList';
+                        window.location.href = '/instituteList';
                     } else {
                         console.error('Failed to create institute:', data);
                         alert('Failed to add institute. Please try again.');

@@ -8,18 +8,12 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    /**
-     * Show the login page.
-     */
-    public function showLoginPage()
+    public function loginPage()
     {
         return view('pages.login'); // You can change this to the actual login page view name.
     }
 
-    /**
-     * Show the dashboard page.
-     */
-    public function showDashboardPage()
+    public function dashboardPage()
     {
         // dd(Auth::user());
         // if (Auth::user()->role == 'bank_admin') {
@@ -32,27 +26,32 @@ class PageController extends Controller
         return view('pages.dashboardBank');
     }
 
-    /**
-     * Show the settings page.
-     */
-    public function showSettingsPage()
+    public function settingsPage()
     {
         return view('pages.settings');
     }
 
-    /**
-     * Show the institute list page.
-     */
-    public function showInstituteListPage()
+    public function instituteListPage()
     {
         return view('pages.instituteList');
     }
 
-    /**
-     * Show the profile page.
-     */
-    public function showProfilePage()
+    public function institutePage(){
+        return view('pages.institute');
+    }
+
+    public function addInstitutePage(){
+        return view('pages.addInstitute');
+    }
+    
+    public function profilePage()
     {
         return view('pages.profile');
     }
+
+    public function userInstituteListPage(){
+        return view('pages.userInstituteList');
+    }
+
+
 }

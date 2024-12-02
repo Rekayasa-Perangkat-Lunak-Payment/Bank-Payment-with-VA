@@ -97,6 +97,7 @@
 
     <script src="{{ asset('assets/js/app.js')}}"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    @yield('scripts')
 </body>
 
 </html>
