@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Http\Controllers\InstitutionAdminController;
 
 class PageController extends Controller
 {
@@ -49,9 +50,14 @@ class PageController extends Controller
         return view('pages.profile');
     }
 
-    public function userInstituteListPage(){
-        return view('pages.userInstituteList');
+    public function userInstituteListPage(Request $request){
+        $response = app(InstitutionAdminController::class)->index($request);
+        $userInstitutions = json_decode($response->getContent(), true);
+        // dd($userInstitutions);
+        return view('pages.userInstituteList', compact('userInstitutions'));
     }
 
-
+    public function addUserInstitutePage(){
+        return view('pages.addUserInstitute');
+    }
 }

@@ -33,6 +33,8 @@ use App\Http\Controllers\BankAdminController;
 Route::apiResource('transactions', TransactionController::class);
 Route::apiResource('institutions', InstitutionController::class);
 Route::apiResource('students', StudentController::class);
+Route::apiResource('userInstitutions', InstitutionAdminController::class);
+Route::apiResource('userBanks', BankAdminController::class);
 
 // Route::prefix('admin')->group(function () {
 //     Route::apiResource('institution-admins', InstitutionAdminController::class);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Institution;
 use Illuminate\Http\Request;
 use App\Models\InstitutionAdmin;
 use App\Models\User;
@@ -14,11 +15,31 @@ class InstitutionAdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $institutionAdmins = InstitutionAdmin::where('is_deleted', false)->get();
-        return response()->json($institutionAdmins);
+        $query = InstitutionAdmin::with(['user', 'institution']);
+
+        // Filter berdasarkan pencarian
+        if ($request->has('search') && $request->search != '') {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            })->orWhereHas('institution', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->search . '%');
+            });
+        }
+
+        // Filter berdasarkan status institusi
+        if ($request->has('status') && $request->status != '') {
+            $query->whereHas('institution', function ($q) use ($request) {
+                $q->where('status', $request->status);
+            });
+        }
+
+        $userInstitutions = $query->get();
+
+        return response()->json($userInstitutions);
     }
+
 
     /**
      * Store a newly created Institution admin in storage.
@@ -29,16 +50,34 @@ class InstitutionAdminController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|unique:institution_admins,username',
-            'password' => 'required|string|min:8',
+            'name' => 'required|string|max:255',
+            'title' => 'required|string|max:255',
+            'user.username' => 'required|string|unique:users,username',
+            'user.password' => 'required|string|min:8',
+            'user.email' => 'required|email|unique:users,email',
+            'institution_id' => 'required|exists:institutions,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $institutionAdmin = InstitutionAdmin::create($request->only(['username', 'password']));
-        return response()->json($institutionAdmin, 201);
+        // Create a new user
+        $user = User::create([
+            'username' => $request->input('user.username'),
+            'password' => bcrypt($request->input('user.password')),
+            'email' => $request->input('user.email'),
+        ]);
+
+        // Create the InstitutionAdmin linked to the new user
+        $institutionAdmin = InstitutionAdmin::create([
+            'user_id' => $user->id,
+            'institution_id' => $request->institution_id,
+            'name' => $request->name,
+            'title' => $request->title,
+        ]);
+
+        return response()->json($institutionAdmin->load(['user', 'institution']), 201);
     }
 
     /**
@@ -49,9 +88,12 @@ class InstitutionAdminController extends Controller
      */
     public function show($id)
     {
-        $institutionAdmin = InstitutionAdmin::find($id);
+        $institutionAdmin = InstitutionAdmin::with(['user', 'institution'])
+            ->where('id', $id)
+            ->where('is_deleted', false)
+            ->first();
 
-        if (!$institutionAdmin || $institutionAdmin->is_deleted) {
+        if (!$institutionAdmin) {
             return response()->json(['error' => 'Institution Admin not found'], 404);
         }
 
@@ -59,7 +101,7 @@ class InstitutionAdminController extends Controller
     }
 
     /**
-     * Update the specified institution admin in storage.
+     * Update the specified Institution admin in storage.
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
@@ -74,23 +116,33 @@ class InstitutionAdminController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'username' => 'sometimes|string|unique:Institution_admins,username,' . $id,
-            'password' => 'sometimes|string|min:8',
+            'name' => 'sometimes|string|max:255',
+            'title' => 'sometimes|string|max:255',
+            'user.username' => 'sometimes|string|unique:users,username,' . $institutionAdmin->user_id,
+            'user.password' => 'sometimes|string|min:8',
+            'institution_id' => 'sometimes|exists:institutions,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        if ($request->has('username')) {
-            $institutionAdmin->username = $request->username;
+        // Update User data if provided
+        if ($request->has('user')) {
+            $user = $institutionAdmin->user;
+            if ($request->has('user.username')) {
+                $user->username = $request->input('user.username');
+            }
+            if ($request->has('user.password')) {
+                $user->password = bcrypt($request->input('user.password'));
+            }
+            $user->save();
         }
-        if ($request->has('password')) {
-            $institutionAdmin->password = $request->password; // Will trigger setPasswordAttribute to hash
-        }
-        $institutionAdmin->save();
 
-        return response()->json($institutionAdmin);
+        // Update InstitutionAdmin data
+        $institutionAdmin->update($request->only(['name', 'title', 'institution_id']));
+
+        return response()->json($institutionAdmin->load(['user', 'institution']));
     }
 
     /**
