@@ -25,7 +25,7 @@
                                 <h3 class="mb-3">Nilai Transaksi</h3>
                             </div>
                             <div>
-                                <i class="fa fa-credit-card" style="font-size: 30px; color: #8928a7;"></i>
+                                <i class="fa fa-credit-card" style="font-size: 30px; color: #28a745;"></i>
                             </div>
                         </div>
                         <h5 class="text-muted font-size-12">Jumlah Nilai Transaksi</h5>
