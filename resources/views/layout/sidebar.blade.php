@@ -46,6 +46,13 @@
                             <span>Payment History</span>
                         </a>
                     </li>
+
+                    <li>
+                        <a href="/studentList" class="waves-effect">
+                            <i class="ri-parent-line"></i>
+                            <span>Student List</span>
+                        </a>
+                    </li>
                 {{-- @endif --}}
             </ul>
             <!-- end ul -->

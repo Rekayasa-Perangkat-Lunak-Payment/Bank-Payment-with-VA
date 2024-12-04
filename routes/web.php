@@ -22,3 +22,4 @@ Route::get('/user/{id}/disable', [PageController::class, 'disableUserView'])->na
 Route::get('/user/{id}/change-password', [PageController::class, 'changePasswordView'])->name('user.changePassword');
 Route::get('/user/{id}/edit', [PageController::class, 'editUserView'])->name('user.edit');
 
+Route::get('/studentList', [PageController::class, 'studentListPage'])->name('studentList');

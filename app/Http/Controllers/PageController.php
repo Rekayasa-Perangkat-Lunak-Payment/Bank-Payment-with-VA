@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\InstitutionAdminController;
+use App\Models\Institution;
 use App\Models\InstitutionAdmin;
 
 class PageController extends Controller
@@ -64,5 +65,10 @@ class PageController extends Controller
     }
     public function addUserInstitutePage(){
         return view('pages.addUserInstitute');
+    }
+
+    public function studentListPage(){
+        $institutions = Institution::all();
+        return view('pages.studentList', compact('institutions'));
     }
 }
