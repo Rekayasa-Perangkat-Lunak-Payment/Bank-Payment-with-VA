@@ -40,3 +40,6 @@ Route::get('/institute', function () {
 Route::get('/userInstitute', function () {
     return view('pages/userInstitute');
 });
+Route::get('/dashboardkampus', function () {
+    return view('pages/dashboardkampus');
+});
