@@ -13,7 +13,7 @@ class CreateVirtualAccountsTable extends Migration
      */
     public function up()
     {
-        Schema::create('virtual_accounts', function (Blueprint $table) {
+        Schema::create('virtual_account', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('invoice_id');
             $table->string('virtual_account_number')->unique();

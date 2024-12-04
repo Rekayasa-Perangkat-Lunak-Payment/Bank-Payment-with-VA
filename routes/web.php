@@ -24,3 +24,6 @@ Route::get('/user/{id}/edit', [PageController::class, 'editUserView'])->name('us
 
 Route::get('/studentList', [PageController::class, 'studentListPage'])->name('studentList');
 Route::get('/addStudent', [PageController::class, 'addStudentPage']);
+
+Route::get('/transactions', [PageController::class, 'transactionsPage'])->name('transactions');
+Route::get('/transactions/{id}', [PageController::class, 'transactionPage'])->name('transaction');

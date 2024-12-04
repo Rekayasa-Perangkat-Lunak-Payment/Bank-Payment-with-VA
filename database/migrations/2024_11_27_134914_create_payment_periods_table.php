@@ -13,7 +13,7 @@ class CreatePaymentPeriodsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payment_periods', function (Blueprint $table) {
+        Schema::create('payment_period', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('institution_id');
             $table->char('year', 4);
@@ -24,7 +24,7 @@ class CreatePaymentPeriodsTable extends Migration
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();
 
-            $table->foreign('institution_id')->references('id')->on('institutions')->onDelete('cascade');
+            $table->foreign('institution_id')->references('id')->on('institution')->onDelete('cascade');
         });
     }
 

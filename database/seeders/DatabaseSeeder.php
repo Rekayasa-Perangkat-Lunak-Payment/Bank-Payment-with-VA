@@ -20,7 +20,11 @@ class DatabaseSeeder extends Seeder
             InstitutionSeeder::class,
             StudentSeeder::class,
             BankAdminSeeder::class,
-            InstitutionAdminSeeder::class
+            InstitutionAdminSeeder::class,
+            ItemTypeSeeder::class,
+            PaymentPeriodSeeder::class,
+            InvoiceSeeder::class,
+            InvoiceItemSeeder::class
         ]);
     }
 }

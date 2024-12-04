@@ -21,8 +21,8 @@ class CreateInvoicesTable extends Migration
             $table->timestamps();
 
             // Set up the foreign key relationship if needed (assuming a student model exists)
-            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
-            $table->foreign('payment_period_id')->references('id')->on('payment_periods')->onDelete('cascade');
+            $table->foreign('student_id')->references('id')->on('student')->onDelete('cascade');
+            $table->foreign('payment_period_id')->references('id')->on('payment_period')->onDelete('cascade');
         });
     }
 

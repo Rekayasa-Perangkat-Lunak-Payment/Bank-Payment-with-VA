@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\InstitutionAdminController;
 use App\Models\Institution;
 use App\Models\InstitutionAdmin;
+use App\Models\Transaction;
 
 class PageController extends Controller
 {
@@ -75,5 +76,14 @@ class PageController extends Controller
     public function addStudentPage(){
         $institutions = Institution::all();
         return view('pages.addStudent', compact('institutions'));
+    }
+
+    public function transactionsPage(){
+        $transactions = Transaction::all();
+        return view('pages.transactions', compact('transactions'));
+    }
+
+    public function transactionPage($id){
+        return view('pages.transaction', compact('id'));
     }
 }

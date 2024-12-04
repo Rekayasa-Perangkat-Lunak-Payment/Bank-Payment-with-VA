@@ -13,9 +13,9 @@ class CreateBankAdminsTable extends Migration
      */
     public function up()
     {
-        Schema::create('bank_admins', function (Blueprint $table) {
+        Schema::create('bank_admin', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('user');
             $table->string('name');
             $table->string('nik');
             $table->timestamps();
