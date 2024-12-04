@@ -33,14 +33,18 @@ Route::get('/instituteList', function () {
     return view('pages/instituteList');
 });
 
-Route::get('/instituteList', function () {
-    return view('pages/instituteList');
-});
-
 Route::get('/institute', function () {
     return view('pages/institute');
 });
 
 Route::get('/userInstitute', function () {
     return view('pages/userInstitute');
+});
+
+Route::get('/transactions', function () {
+    return view('pages/transactions');
+});
+
+Route::get('/dashboardkampus', function () {
+    return view('pages/dashboardkampus');
 });
