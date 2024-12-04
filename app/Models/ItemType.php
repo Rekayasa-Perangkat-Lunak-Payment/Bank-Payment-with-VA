@@ -15,4 +15,9 @@ class ItemType extends Model
         'description',
         'is_deleted',
     ];
+
+    public function institution()
+    {
+        return $this->belongsTo(Institution::class);
+    }
 }

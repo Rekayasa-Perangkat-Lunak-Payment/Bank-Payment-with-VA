@@ -18,4 +18,16 @@ class InvoiceItem extends Model
         'quantity',
         'price',
     ];
+
+    // Define the relationship to Invoice
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
+
+    // Define the relationship to ItemType
+    public function itemType()
+    {
+        return $this->belongsTo(ItemType::class);
+    }
 }

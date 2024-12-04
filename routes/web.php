@@ -23,3 +23,4 @@ Route::get('/user/{id}/change-password', [PageController::class, 'changePassword
 Route::get('/user/{id}/edit', [PageController::class, 'editUserView'])->name('user.edit');
 
 Route::get('/studentList', [PageController::class, 'studentListPage'])->name('studentList');
+Route::get('/addStudent', [PageController::class, 'addStudentPage']);

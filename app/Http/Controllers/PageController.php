@@ -71,4 +71,9 @@ class PageController extends Controller
         $institutions = Institution::all();
         return view('pages.studentList', compact('institutions'));
     }
+
+    public function addStudentPage(){
+        $institutions = Institution::all();
+        return view('pages.addStudent', compact('institutions'));
+    }
 }

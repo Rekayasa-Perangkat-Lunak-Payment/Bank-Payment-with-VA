@@ -3,11 +3,15 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\InvoiceController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\InstitutionController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\InstitutionAdminController;
 use App\Http\Controllers\BankAdminController;
+use App\Http\Controllers\InvoiceItemController;
+use App\Http\Controllers\VirtualAccountController;
+use App\Http\Controllers\ItemTypeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,6 +40,8 @@ Route::apiResource('students', StudentController::class);
 Route::apiResource('userInstitutions', InstitutionAdminController::class);
 Route::put('userInstitutions/{id}/disable', [InstitutionAdminController::class, 'disable']);
 Route::apiResource('userBanks', BankAdminController::class);
+Route::apiResource('invoices', InvoiceController::class);
+Route::apiResource('invoiceItems', InvoiceItemController::class);
 
 // Route::prefix('admin')->group(function () {
 //     Route::apiResource('institution-admins', InstitutionAdminController::class);
