@@ -23,7 +23,8 @@ class InvoiceItemController extends Controller
             'invoice_id' => 'required|exists:invoices,id', // Invoice must exist
             'item_type_id' => 'required|exists:item_types,id', // Item type must exist
             'quantity' => 'required|numeric|min:1', // Quantity must be at least 1
-            'unit_price' => 'required|numeric|min:0', // Unit price must be positive
+            'description' => 'nullable|string',
+            'cost' => 'nullable|numeric|min:0',
         ]);
 
         // Calculate the total price (quantity * unit_price)

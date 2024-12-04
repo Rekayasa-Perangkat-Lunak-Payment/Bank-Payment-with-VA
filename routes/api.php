@@ -12,6 +12,7 @@ use App\Http\Controllers\BankAdminController;
 use App\Http\Controllers\InvoiceItemController;
 use App\Http\Controllers\VirtualAccountController;
 use App\Http\Controllers\ItemTypeController;
+use App\Http\Controllers\PaymentPeriodController;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,6 +43,9 @@ Route::put('userInstitutions/{id}/disable', [InstitutionAdminController::class, 
 Route::apiResource('userBanks', BankAdminController::class);
 Route::apiResource('invoices', InvoiceController::class);
 Route::apiResource('invoiceItems', InvoiceItemController::class);
+Route::apiResource('virtualAccounts', VirtualAccountController::class);
+Route::apiResource('itemTypes', ItemTypeController::class);
+Route::apiResource('paymentPeriod', PaymentPeriodController::class);
 
 // Route::prefix('admin')->group(function () {
 //     Route::apiResource('institution-admins', InstitutionAdminController::class);
