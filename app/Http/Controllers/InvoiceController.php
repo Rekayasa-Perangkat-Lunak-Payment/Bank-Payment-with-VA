@@ -10,7 +10,13 @@ class InvoiceController extends Controller
     // List all invoices
     public function index()
     {
-        $invoices = Invoice::all();
+        $invoices = Invoice::with(['student' => function ($query) {
+            $query->select('id', 'student_id', 'name');
+        }, 'paymentPeriod' => function ($query) {
+            $query->select('id', 'month', 'year', 'semester', 'fixed_cost', 'credit_cost');
+        }, 'invoiceItems.itemType' => function ($query) {
+            $query->select('id', 'name', 'description');
+        }])->get();
         return response()->json($invoices);
     }
 

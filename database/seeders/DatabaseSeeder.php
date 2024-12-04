@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Doctrine\DBAL\Event\TransactionEventArgs;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -24,7 +25,9 @@ class DatabaseSeeder extends Seeder
             ItemTypeSeeder::class,
             PaymentPeriodSeeder::class,
             InvoiceSeeder::class,
-            InvoiceItemSeeder::class
+            InvoiceItemSeeder::class,
+            VirtualAccountSeeder::class,
+            TransactionSeeder::class
         ]);
     }
 }

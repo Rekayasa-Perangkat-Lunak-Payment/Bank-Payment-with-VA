@@ -9,7 +9,7 @@ class InvoiceItem extends Model
 {
     use HasFactory;
     protected $table = 'invoice_item';
-
+    protected $hidden = ['created_at', 'updated_at'];
     protected $fillable = [
         'invoice_id',
         'type',
