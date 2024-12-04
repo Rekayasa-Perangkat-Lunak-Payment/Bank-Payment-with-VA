@@ -34,6 +34,7 @@ Route::apiResource('transactions', TransactionController::class);
 Route::apiResource('institutions', InstitutionController::class);
 Route::apiResource('students', StudentController::class);
 Route::apiResource('userInstitutions', InstitutionAdminController::class);
+Route::put('userInstitutions/{id}/disable', [InstitutionAdminController::class, 'disable']);
 Route::apiResource('userBanks', BankAdminController::class);
 
 // Route::prefix('admin')->group(function () {

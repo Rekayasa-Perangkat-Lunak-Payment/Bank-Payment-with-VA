@@ -15,7 +15,7 @@
                 </li>
 
                 <!-- User Institute List (Only for Institution Admin) -->
-                @if(auth()->check() && auth()->user()->institutionAdmin !== null)
+                {{-- @if(auth()->check() && auth()->user()->institutionAdmin !== null) --}}
                     <li>
                         <a href="/userInstituteList" class="waves-effect">
                             <i class="fas fa-align-justify"></i>
@@ -29,10 +29,10 @@
                             <span>Institute List</span>
                         </a>
                     </li>
-                @endif
+                {{-- @endif --}}
 
                 <!-- Bank Transactions (Only for Bank Admin) -->
-                @if(auth()->check() && auth()->user()->bankAdmin !== null)
+                {{-- @if(auth()->check() && auth()->user()->bankAdmin !== null) --}}
                     <li>
                         <a href="/bankTransactions" class="waves-effect">
                             <i class="ri-wallet-line"></i>
@@ -46,7 +46,7 @@
                             <span>Payment History</span>
                         </a>
                     </li>
-                @endif
+                {{-- @endif --}}
             </ul>
             <!-- end ul -->
         </div>

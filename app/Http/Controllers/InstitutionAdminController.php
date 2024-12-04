@@ -90,7 +90,7 @@ class InstitutionAdminController extends Controller
     {
         $institutionAdmin = InstitutionAdmin::with(['user', 'institution'])
             ->where('id', $id)
-            ->where('is_deleted', false)
+            // ->where('is_deleted', false)
             ->first();
 
         if (!$institutionAdmin) {
@@ -109,41 +109,39 @@ class InstitutionAdminController extends Controller
      */
     public function update(Request $request, $id)
     {
+        // Find the institution admin by ID
         $institutionAdmin = InstitutionAdmin::find($id);
 
         if (!$institutionAdmin || $institutionAdmin->is_deleted) {
             return response()->json(['error' => 'Institution Admin not found'], 404);
         }
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'sometimes|string|max:255',
-            'title' => 'sometimes|string|max:255',
-            'user.username' => 'sometimes|string|unique:users,username,' . $institutionAdmin->user_id,
-            'user.password' => 'sometimes|string|min:8',
-            'institution_id' => 'sometimes|exists:institutions,id',
+        // Validate the request
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'title' => 'nullable|string|max:255',
+            'institution_id' => 'required|exists:institutions,id',
+            'user.username' => 'required|string|max:255',
+            'user.email' => 'required|email|max:255|unique:users,email,' . $institutionAdmin->user->id,
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
+        // Update InstitutionAdmin fields
+        $institutionAdmin->update([
+            'name' => $validated['name'],
+            'title' => $validated['title'],
+            'institution_id' => $validated['institution_id']
+        ]);
 
-        // Update User data if provided
-        if ($request->has('user')) {
-            $user = $institutionAdmin->user;
-            if ($request->has('user.username')) {
-                $user->username = $request->input('user.username');
-            }
-            if ($request->has('user.password')) {
-                $user->password = bcrypt($request->input('user.password'));
-            }
-            $user->save();
-        }
+        // Update User fields
+        $institutionAdmin->user->update([
+            'username' => $validated['user']['username'],
+            'email' => $validated['user']['email'],
+        ]);
 
-        // Update InstitutionAdmin data
-        $institutionAdmin->update($request->only(['name', 'title', 'institution_id']));
-
+        // Return the updated institution admin with its related data (user and institution)
         return response()->json($institutionAdmin->load(['user', 'institution']));
     }
+
 
     /**
      * Soft delete the specified institution admin.
@@ -163,5 +161,20 @@ class InstitutionAdminController extends Controller
         $institutionAdmin->save();
 
         return response()->json(['message' => 'Institution Admin deleted successfully']);
+    }
+
+    public function disable($id){
+        $institutionAdmin = InstitutionAdmin::find($id);
+        if(!empty($institutionAdmin)){
+            $institutionAdmin->user->is_deleted = 1;
+            $institutionAdmin->user->save();
+            return response()->json([
+                'message' => $institutionAdmin->user->username . ' disabled successfully'
+            ], 200);
+        }else{
+            return response()->json([
+                'message' => 'Institution Admin not found'
+            ], 404);
+        }
     }
 }

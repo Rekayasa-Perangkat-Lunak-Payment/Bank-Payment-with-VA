@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\InstitutionAdminController;
+use App\Models\InstitutionAdmin;
 
 class PageController extends Controller
 {
@@ -57,6 +58,10 @@ class PageController extends Controller
         return view('pages.userInstituteList', compact('userInstitutions'));
     }
 
+    public function userInstitutePage($id){
+        $userInstitute = InstitutionAdmin::findOrFail($id);
+        return view('pages.userInstitute', compact('userInstitute'));
+    }
     public function addUserInstitutePage(){
         return view('pages.addUserInstitute');
     }

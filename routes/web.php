@@ -16,3 +16,9 @@ Route::get('/addInstitute', [PageController::class, 'addInstitutePage']);
 
 Route::get('/userInstituteList', [PageController::class, 'userInstituteListPage'])->name('userInstituteList');
 Route::get('/addUserInstitute', [PageController::class, 'addUserInstitutePage']);
+Route::get('/userInstitute/{id}', [PageController::class, 'userInstitutePage'])->name('userInstitute');
+
+Route::get('/user/{id}/disable', [PageController::class, 'disableUserView'])->name('user.disable');
+Route::get('/user/{id}/change-password', [PageController::class, 'changePasswordView'])->name('user.changePassword');
+Route::get('/user/{id}/edit', [PageController::class, 'editUserView'])->name('user.edit');
+
