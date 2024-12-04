@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Institution extends Model
 {
     use HasFactory;
-    protected $table = 'institutions';
+    protected $table = 'institution';
 
     protected $fillable = [
         'npsn',

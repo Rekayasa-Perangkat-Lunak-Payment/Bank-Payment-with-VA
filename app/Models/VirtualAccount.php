@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class VirtualAccount extends Model
 {
     use HasFactory;
-    protected $table = 'virtual_accounts';
+    protected $table = 'virtual_account';
 
     protected $fillable = [
         'invoice_id',
@@ -17,4 +17,9 @@ class VirtualAccount extends Model
         'is_active',
         'total_amount'
     ];
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
+    }
 }

@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 class Student extends Model
 {
     use HasFactory;
-    protected $table = 'students';
+    protected $table = 'student';
     protected $fillable = [
         'institution_id',
         'student_id',

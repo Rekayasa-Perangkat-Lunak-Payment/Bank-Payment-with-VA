@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class BankAdmin extends Model
 {
     use HasFactory;
-    protected $table = 'bank_admins';
+    protected $table = 'bank_admin';
 
     protected $fillable = [
         'user_id',

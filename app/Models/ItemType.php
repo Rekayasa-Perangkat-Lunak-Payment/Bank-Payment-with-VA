@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class ItemType extends Model
 {
     use HasFactory;
-    protected $table = 'item_types';
+    protected $table = 'item_type';
     protected $fillable = [
         'institution_id',
         'name',
