@@ -21,7 +21,7 @@ class CreateInstitutionAdminsTable extends Migration
             $table->string('title');
             $table->timestamps();
 
-            $table->foreign('institution_id')->references('id')->on('institution')->onDelete('cascade');
+            $table->foreign('institution_id')->references('id')->on('institutions')->onDelete('cascade');
         });
     }
 

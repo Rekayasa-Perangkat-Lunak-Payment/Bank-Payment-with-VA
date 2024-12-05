@@ -24,7 +24,7 @@ class CreatePaymentPeriodsTable extends Migration
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();
 
-            $table->foreign('institution_id')->references('id')->on('institution')->onDelete('cascade');
+            $table->foreign('institution_id')->references('id')->on('institutions')->onDelete('cascade');
         });
     }
 

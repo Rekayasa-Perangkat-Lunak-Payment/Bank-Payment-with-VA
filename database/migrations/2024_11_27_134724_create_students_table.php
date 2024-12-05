@@ -18,7 +18,7 @@ class CreateStudentsTable extends Migration
             $table->unsignedBigInteger('institution_id');
             $table->string('student_id');
             $table->string('name');
-            $table->enum('gender', ['Pria', 'Wanita'])->default('Pria');
+            $table->enum('gender', ['Male', 'Female'])->default('Male');
             $table->char('year', 4);
             $table->string('phone');
             $table->string('email')->unique();
@@ -28,7 +28,7 @@ class CreateStudentsTable extends Migration
             $table->boolean('is_deleted')->default(false);
             $table->timestamps();
 
-            $table->foreign('institution_id')->references('id')->on('institution')->onDelete('cascade');
+            $table->foreign('institution_id')->references('id')->on('institutions')->onDelete('cascade');
         });
     }
 

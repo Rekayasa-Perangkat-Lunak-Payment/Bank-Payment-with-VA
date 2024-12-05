@@ -13,7 +13,7 @@ class CreateInstitutionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('institution', function (Blueprint $table) {
+        Schema::create('institutions', function (Blueprint $table) {
             $table->id();
             $table->string('npsn')->unique();
             $table->string('name');
