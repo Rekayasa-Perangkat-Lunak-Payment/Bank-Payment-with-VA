@@ -13,7 +13,7 @@ class CreateInstitutionAdminsTable extends Migration
      */
     public function up()
     {
-        Schema::create('institution_admin', function (Blueprint $table) {
+        Schema::create('institution_admins', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('user');
             $table->unsignedBigInteger('institution_id');
