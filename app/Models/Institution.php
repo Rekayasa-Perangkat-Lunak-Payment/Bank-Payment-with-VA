@@ -23,11 +23,11 @@ class Institution extends Model
 
     public function admins()
     {
-        return $this->hasMany(InstitutionAdmin::class);
+        return $this->hasMany(InstitutionAdmin::class, 'institution_id', 'id');
     }
 
     public function students()
     {
-        return $this->hasMany(Student::class);
+        return $this->hasMany(Student::class, 'institution_id', 'id');
     }
 }

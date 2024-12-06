@@ -7,11 +7,46 @@ use App\Models\Institution;
 
 class InstitutionController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $institutions = Institution::withCount(['admins', 'students'])->get();
-        return response()->json($institutions);
+        $query = Institution::withCount(['admins', 'students']); // Add related counts
+
+        // Search by name
+        if ($request->has('search')) {
+            $query->where('name', 'LIKE', '%' . $request->search . '%');
+        }
+
+        // Filter by admin count
+        if ($request->has('admins_filter')) {
+            $adminsFilter = $request->admins_filter;
+
+            if ($adminsFilter === '0') {
+                $query->having('admins_count', 0);
+            } elseif ($adminsFilter === '1-5') {
+                $query->having('admins_count', '>=', 1)
+                    ->having('admins_count', '<=', 5);
+            } elseif ($adminsFilter === '>5') {
+                $query->having('admins_count', '>', 5);
+            }
+        }
+
+        // Filter by student count
+        if ($request->has('students_filter')) {
+            $studentsFilter = $request->students_filter;
+
+            if ($studentsFilter === '0') {
+                $query->having('students_count', 0);
+            } elseif ($studentsFilter === '1-50') {
+                $query->having('students_count', '>=', 1)
+                    ->having('students_count', '<=', 50);
+            } elseif ($studentsFilter === '>50') {
+                $query->having('students_count', '>', 50);
+            }
+        }
+
+        return response()->json($query->get());
     }
+
 
     public function store(Request $request)
     {

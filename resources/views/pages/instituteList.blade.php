@@ -13,6 +13,31 @@
         </div>
     </div>
 
+    <div class="row mb-3">
+        <div class="col-md-4">
+            <input type="text" id="search-input" class="form-control" placeholder="Search by name..." />
+        </div>
+        <div class="col-md-3">
+            <select id="filter-admins" class="form-control">
+                <option value="">Filter by Admin Count</option>
+                <option value="0">No Admin</option>
+                <option value="1-5">1-5 Admins</option>
+                <option value=">5">More than 5 Admins</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="filter-students" class="form-control">
+                <option value="">Filter by Student Count</option>
+                <option value="0">No Students</option>
+                <option value="1-50">1-50 Students</option>
+                <option value=">50">More than 50 Students</option>
+            </select>
+        </div>
+        <div class="col-md-2">
+            <button class="btn btn-primary" onclick="fetchInstitutes()">Apply Filters</button>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-xl-12">
             <div class="card">
@@ -42,21 +67,35 @@
 
 @section('scripts')
     <script>
-        console.log('Test fetchInstitutes directly');
-        fetchInstitutes();
-
-        // Fetch data from the API when the page loads
+        // Fetch data from the API
         document.addEventListener("DOMContentLoaded", function() {
-            console.log('Page loaded and JavaScript is running');
             fetchInstitutes();
         });
 
         function fetchInstitutes() {
-            fetch('http://localhost:8000/api/institutions')
+            const searchQuery = document.getElementById('search-input').value.trim();
+            const filterAdmins = document.getElementById('filter-admins').value;
+            const filterStudents = document.getElementById('filter-students').value;
+
+            const params = new URLSearchParams();
+            if (searchQuery) params.append('search', searchQuery);
+            if (filterAdmins) params.append('admins_filter', filterAdmins);
+            if (filterStudents) params.append('students_filter', filterStudents);
+
+            console.log('Applying filters with parameters:', params.toString());
+
+            const url = `http://localhost:8000/api/institutions?${params.toString()}`;
+
+            fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     const tableBody = document.getElementById('institute-table-body');
                     tableBody.innerHTML = '';
+
+                    if (data.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="6" class="text-center">No results found</td></tr>';
+                        return;
+                    }
 
                     data.forEach(institute => {
                         const row = document.createElement('tr');
@@ -85,9 +124,10 @@
                     });
                 })
                 .catch(error => {
-                    console.error('Error during fetch:', error);
+                    console.error('Error fetching institutes:', error);
                 });
         }
+
 
         function loadProfile(id) {
             window.location.href = `/institute/${id}`;
