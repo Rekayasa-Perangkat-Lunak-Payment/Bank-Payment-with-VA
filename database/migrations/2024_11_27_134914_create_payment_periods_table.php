@@ -13,7 +13,7 @@ class CreatePaymentPeriodsTable extends Migration
      */
     public function up()
     {
-        Schema::create('payment_period', function (Blueprint $table) {
+        Schema::create('payment_periods', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('institution_id');
             $table->char('year', 4);
