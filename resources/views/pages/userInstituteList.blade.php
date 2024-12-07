@@ -9,6 +9,10 @@
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
                 <h4 class="mb-0">User Institute List</h4>
+                <!-- Button to add new User Institute -->
+                <a href="{{ route('addUserInstitute') }}" class="btn btn-success">
+                    <i class="mdi mdi-plus-circle-outline me-1"></i> Add New User Institute
+                </a>
             </div>
         </div>
     </div>

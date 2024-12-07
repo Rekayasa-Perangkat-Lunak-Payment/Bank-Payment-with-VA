@@ -15,7 +15,7 @@ Route::get('/institute/{id}', [PageController::class, 'institutePage']);
 Route::get('/addInstitute', [PageController::class, 'addInstitutePage']);
 
 Route::get('/userInstituteList', [PageController::class, 'userInstituteListPage'])->name('userInstituteList');
-Route::get('/addUserInstitute', [PageController::class, 'addUserInstitutePage']);
+Route::get('/addUserInstitute', [PageController::class, 'addUserInstitutePage'])->name('addUserInstitute');
 Route::get('/userInstitute/{id}', [PageController::class, 'userInstitutePage'])->name('userInstitute');
 
 Route::get('/user/{id}/disable', [PageController::class, 'disableUserView'])->name('user.disable');
@@ -24,6 +24,12 @@ Route::get('/user/{id}/edit', [PageController::class, 'editUserView'])->name('us
 
 Route::get('/studentList', [PageController::class, 'studentListPage'])->name('studentList');
 Route::get('/addStudent', [PageController::class, 'addStudentPage']);
+Route::get('/student/{id}', [PageController::class, 'studentPage']);
+
+Route::get('/paymentPeriodList', [PageController::class, 'paymentPeriodListPage'])->name('paymentPeriodList');
+
+Route::get('/invoiceList', [PageController::class, 'invoiceListPage'])->name('invoiceList');
+Route::get('/invoice/{id}', [PageController::class, 'invoicePage'])->name('invoice');
 
 Route::get('/transactions', [PageController::class, 'transactionsPage'])->name('transactions');
 Route::get('/transactions/{id}', [PageController::class, 'transactionPage'])->name('transaction');

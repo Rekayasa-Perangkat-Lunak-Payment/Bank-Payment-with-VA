@@ -8,11 +8,42 @@ use Illuminate\Http\Request;
 class PaymentPeriodController extends Controller
 {
     // List all payment periods
-    public function index()
+    public function index(Request $request)
     {
-        $paymentPeriods = PaymentPeriod::where('is_deleted', false)->get(); // Exclude deleted payment periods
+        // Ambil parameter pencarian dan filter
+        $semester = $request->input('semester');
+        $year = $request->input('year');
+        $institutionName = $request->input('institution_name');
+    
+        // Mulai query untuk PaymentPeriod
+        $query = PaymentPeriod::where('is_deleted', false);
+    
+        // Filter berdasarkan semester jika ada
+        if ($semester) {
+            $query->where('semester', $semester);
+        }
+    
+        // Filter berdasarkan tahun jika ada
+        if ($year) {
+            $query->where('year', $year);
+        }
+    
+        // Filter berdasarkan nama institusi jika ada
+        if ($institutionName) {
+            $query->whereHas('institution', function ($query) use ($institutionName) {
+                $query->where('name', 'like', '%' . $institutionName . '%');
+            });
+        }
+    
+        // Eager load relasi 'institution' untuk mendapatkan detail institusi
+        $paymentPeriods = $query->with('institution', function ($query) { 
+            $query->select('id', 'name', 'status', 'educational_level');
+        })->get();
+
+        // Kembalikan hasil query dalam bentuk JSON
         return response()->json($paymentPeriods);
     }
+    
 
     // Store a new payment period
     public function store(Request $request)
@@ -25,7 +56,6 @@ class PaymentPeriodController extends Controller
             'semester' => 'required|integer|min:1|max:2', // Valid semester range (1 or 2)
             'fixed_cost' => 'required|numeric|min:0', // Ensure fixed cost is a positive number
             'credit_cost' => 'required|numeric|min:0', // Ensure credit cost is a positive number
-            'is_deleted' => 'required|boolean', // Ensure `is_deleted` is a boolean
         ]);
 
         // Create a new payment period record

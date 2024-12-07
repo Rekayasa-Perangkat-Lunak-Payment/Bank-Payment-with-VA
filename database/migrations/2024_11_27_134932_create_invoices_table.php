@@ -13,7 +13,7 @@ class CreateInvoicesTable extends Migration
      */
     public function up()
     {
-        Schema::create('invoice', function (Blueprint $table) {
+        Schema::create('invoices', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('student_id');
             $table->unsignedBigInteger('payment_period_id');
@@ -21,8 +21,8 @@ class CreateInvoicesTable extends Migration
             $table->timestamps();
 
             // Set up the foreign key relationship if needed (assuming a student model exists)
-            $table->foreign('student_id')->references('id')->on('student')->onDelete('cascade');
-            $table->foreign('payment_period_id')->references('id')->on('payment_period')->onDelete('cascade');
+            $table->foreign('student_id')->references('id')->on('students')->onDelete('cascade');
+            $table->foreign('payment_period_id')->references('id')->on('payment_periods')->onDelete('cascade');
         });
     }
 

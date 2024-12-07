@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentPeriod extends Model
 {
     use HasFactory;
-    protected $table = 'payment_period';
+    protected $table = 'payment_periods';
     protected $fillable = [
         'institution_id',
         'year',

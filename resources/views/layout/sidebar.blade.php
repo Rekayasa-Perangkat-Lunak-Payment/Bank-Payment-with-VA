@@ -34,9 +34,9 @@
                 <!-- Bank Transactions (Only for Bank Admin) -->
                 {{-- @if(auth()->check() && auth()->user()->bankAdmin !== null) --}}
                     <li>
-                        <a href="/bankTransactions" class="waves-effect">
+                        <a href="/transactions" class="waves-effect">
                             <i class="ri-wallet-line"></i>
-                            <span>Bank Transactions</span>
+                            <span>Transactions</span>
                         </a>
                     </li>
 

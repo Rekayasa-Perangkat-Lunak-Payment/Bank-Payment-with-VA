@@ -4,8 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\VirtualAccount;
+use App\Models\Transaction;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
+
 class VirtualAccountController extends Controller
 {
     /**
@@ -15,9 +17,40 @@ class VirtualAccountController extends Controller
      */
     public function index()
     {
-        $virtualAccounts = VirtualAccount::all();
-        return response()->json($virtualAccounts, Response::HTTP_OK);
+        $invoices = VirtualAccount::with([
+            'invoice' => function ($query) {
+                $query->select('id', 'student_id', 'payment_period_id', 'total_amount');
+            },
+            'invoice.student' => function ($query) {
+                $query->select('id', 'student_id', 'name');
+            },
+            'invoice.paymentPeriod' => function ($query) {
+                $query->select('id', 'month', 'year', 'semester');
+            },
+            'invoice.invoiceItems.itemType' => function ($query) {
+                $query->select('id', 'name', 'description');
+            }
+        ])->get()->map(function ($virtualAccount) {
+            // Check if the virtual account has a corresponding transaction
+            $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
+
+            // Determine status
+            $status = 'Unpaid';
+            if ($isPaid) {
+                $status = 'Paid';
+            } elseif ($virtualAccount->is_expired) {
+                $status = 'Expired';
+            }
+
+            // Append status to the virtual account data
+            $virtualAccount->status = $status;
+
+            return $virtualAccount;
+        });
+
+        return response()->json($invoices);
     }
+
 
     /**
      * Store a newly created virtual account in storage.
@@ -58,13 +91,42 @@ class VirtualAccountController extends Controller
      */
     public function show($id)
     {
-        $virtualAccount = VirtualAccount::find($id);
+        // Fetch the virtual account and its related data
+        $virtualAccount = VirtualAccount::with([
+            'invoice' => function ($query) {
+                $query->select('id', 'student_id', 'payment_period_id', 'total_amount');
+            },
+            'invoice.student' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'invoice.paymentPeriod' => function ($query) {
+                $query->select('id', 'month', 'year', 'semester');
+            },
+            'invoice.invoiceItems.itemType' => function ($query) {
+                $query->select('id', 'name', 'description');
+            }
+        ])->find($id);
 
+        // Check if the virtual account exists
         if (!$virtualAccount) {
-            return response()->json(['message' => 'Virtual Account not found'], Response::HTTP_NOT_FOUND);
+            return response()->json(['message' => 'Virtual Account not found'], 404);
         }
 
-        return response()->json($virtualAccount, Response::HTTP_OK);
+        // Check if the virtual account has a corresponding transaction
+        $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
+
+        // Determine status
+        $status = 'Unpaid';
+        if ($isPaid) {
+            $status = 'Paid';
+        } elseif ($virtualAccount->is_expired) {
+            $status = 'Expired';
+        }
+
+        // Append status to the virtual account data
+        $virtualAccount->status = $status;
+
+        return response()->json($virtualAccount);
     }
 
     /**

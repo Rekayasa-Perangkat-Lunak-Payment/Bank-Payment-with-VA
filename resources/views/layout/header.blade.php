@@ -3,7 +3,6 @@
         <div class="d-flex">
             <!-- LOGO -->
             <div class="navbar-brand-box">
-
                 <a href="index.html" class="logo logo-light">
                     <span class="logo-sm">
                         {{-- logo closed --}}
@@ -50,7 +49,6 @@
                 </div>
             </div>
             <!-- end user -->
-
         </div>
     </div>
 </header>

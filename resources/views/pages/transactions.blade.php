@@ -27,7 +27,7 @@
                         @foreach ($transactions as $transaction)
                         <tr>
                             <td>{{ $transaction['id'] }}</td>
-                            <td>{{ $transaction['va'] }}</td>
+                            <td>{{ $transaction['virtual_account']['va'] }}</td>
                             <td>{{ $transaction['student_id'] }}</td>
                             <td>{{ $transaction['institution'] }}</td>
                             <td>{{ $transaction['period'] }}</td>

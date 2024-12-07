@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class VirtualAccount extends Model
 {
     use HasFactory;
-    protected $table = 'virtual_account';
+    protected $table = 'virtual_accounts';
 
     protected $fillable = [
         'invoice_id',

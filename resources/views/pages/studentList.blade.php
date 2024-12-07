@@ -96,7 +96,7 @@
                                     <td>${student.institution.name}</td>
                                     <td>${student.year}</td>
                                     <td>${student.gender}</td>
-                                    <td><button class="btn btn-soft-primary btn-sm" onclick="window.location.href='/students/${student.id}/edit'">Edit</button></td>
+                                    <td><button class="btn btn-soft-primary btn-sm" onclick="window.location.href='/student/${student.id}'">Edit</button></td>
 
                                 </tr>
                             `;

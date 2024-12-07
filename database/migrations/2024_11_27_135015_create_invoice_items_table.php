@@ -13,7 +13,7 @@ class CreateInvoiceItemsTable extends Migration
      */
     public function up()
     {
-        Schema::create('invoice_item', function (Blueprint $table) {
+        Schema::create('invoice_items', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('invoice_id');
             $table->unsignedBigInteger('item_type_id');
@@ -23,8 +23,8 @@ class CreateInvoiceItemsTable extends Migration
             $table->decimal('price', 10, 2);
             $table->timestamps();
 
-            $table->foreign('invoice_id')->references('id')->on('invoice')->onDelete('cascade');
-            $table->foreign('item_type_id')->references('id')->on('item_type')->onDelete('cascade');
+            $table->foreign('invoice_id')->references('id')->on('invoices')->onDelete('cascade');
+            $table->foreign('item_type_id')->references('id')->on('item_types')->onDelete('cascade');
         });
     }
 

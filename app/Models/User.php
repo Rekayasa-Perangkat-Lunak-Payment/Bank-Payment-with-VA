@@ -14,7 +14,7 @@ class User extends Authenticatable
 {
     use HasFactory, HasApiTokens, Notifiable;
 
-    protected $table = 'user';
+    protected $table = 'users';
     protected $fillable = [
         'username',
         'email',
@@ -45,6 +45,6 @@ class User extends Authenticatable
         if ($this->institutionAdmin) {
             return 'institution_admin';
         }
-        return 'user'; // Default role or fallback
+        return 'users'; // Default role or fallback
     }
 }

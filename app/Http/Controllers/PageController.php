@@ -78,6 +78,22 @@ class PageController extends Controller
         return view('pages.addStudent', compact('institutions'));
     }
 
+    public function studentPage($id){
+        return view('pages.student', compact('id'));
+    }
+
+    public function paymentPeriodListPage(){
+        return view('pages.paymentPeriodList');
+    }
+
+    public function invoicePage($id){
+        return view('pages.invoice', compact('id'));
+    }
+
+    public function invoiceListPage(){
+        return view('pages.invoiceList');
+    }
+
     public function transactionsPage(){
         $transactions = Transaction::all();
         return view('pages.transactions', compact('transactions'));

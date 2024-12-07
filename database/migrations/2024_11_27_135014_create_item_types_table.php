@@ -13,7 +13,7 @@ class CreateItemTypesTable extends Migration
      */
     public function up()
     {
-        Schema::create('item_type', function (Blueprint $table) {
+        Schema::create('item_types', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('institution_id');
             $table->string('name');
