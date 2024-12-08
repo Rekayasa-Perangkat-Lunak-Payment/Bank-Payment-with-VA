@@ -28,6 +28,7 @@ Route::get('/student/{id}', [PageController::class, 'studentPage']);
 
 Route::get('/paymentPeriodList', [PageController::class, 'paymentPeriodListPage'])->name('paymentPeriodList');
 
+Route::get('/virtualAccountList', [PageController::class, 'virtualAccountListPage'])->name('virtualAccountList');
 Route::get('/invoiceList', [PageController::class, 'invoiceListPage'])->name('invoiceList');
 Route::get('/invoice/{id}', [PageController::class, 'invoicePage'])->name('invoice');
 

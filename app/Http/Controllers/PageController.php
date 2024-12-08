@@ -86,6 +86,9 @@ class PageController extends Controller
         return view('pages.paymentPeriodList');
     }
 
+    public function virtualAccountListPage(){
+        return view('pages.virtualAccountList');
+    }
     public function invoicePage($id){
         return view('pages.invoice', compact('id'));
     }

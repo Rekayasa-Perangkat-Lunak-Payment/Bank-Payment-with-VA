@@ -51,9 +51,9 @@ class PaymentPeriodController extends Controller
         // Validate the incoming request
         $validated = $request->validate([
             'institution_id' => 'required|exists:institutions,id', // Institution must exist
-            'year' => 'required|integer|min:1900|max:2099', // Valid year range
+            'year' => 'required|integer|min:1900|max:3000', // Valid year range
             'month' => 'required|integer|min:1|max:12', // Valid month range (1-12)
-            'semester' => 'required|integer|min:1|max:2', // Valid semester range (1 or 2)
+            'semester' => 'required|string',
             'fixed_cost' => 'required|numeric|min:0', // Ensure fixed cost is a positive number
             'credit_cost' => 'required|numeric|min:0', // Ensure credit cost is a positive number
         ]);
@@ -62,6 +62,7 @@ class PaymentPeriodController extends Controller
         $paymentPeriod = PaymentPeriod::create($validated);
 
         return response()->json([
+            'success' => true,
             'message' => 'Payment period created successfully',
             'payment_period' => $paymentPeriod
         ], 201);
