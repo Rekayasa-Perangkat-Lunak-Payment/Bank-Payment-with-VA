@@ -14,36 +14,36 @@ class PaymentPeriodController extends Controller
         $semester = $request->input('semester');
         $year = $request->input('year');
         $institutionName = $request->input('institution_name');
-    
+
         // Mulai query untuk PaymentPeriod
         $query = PaymentPeriod::where('is_deleted', false);
-    
+
         // Filter berdasarkan semester jika ada
         if ($semester) {
             $query->where('semester', $semester);
         }
-    
+
         // Filter berdasarkan tahun jika ada
         if ($year) {
             $query->where('year', $year);
         }
-    
+
         // Filter berdasarkan nama institusi jika ada
         if ($institutionName) {
             $query->whereHas('institution', function ($query) use ($institutionName) {
                 $query->where('name', 'like', '%' . $institutionName . '%');
             });
         }
-    
+
         // Eager load relasi 'institution' untuk mendapatkan detail institusi
-        $paymentPeriods = $query->with('institution', function ($query) { 
+        $paymentPeriods = $query->with('institution', function ($query) {
             $query->select('id', 'name', 'status', 'educational_level');
         })->get();
 
         // Kembalikan hasil query dalam bentuk JSON
         return response()->json($paymentPeriods);
     }
-    
+
 
     // Store a new payment period
     public function store(Request $request)
@@ -71,7 +71,7 @@ class PaymentPeriodController extends Controller
     // Show a specific payment period
     public function show($id)
     {
-        $paymentPeriod = PaymentPeriod::findOrFail($id);
+        $paymentPeriod = PaymentPeriod::with('institution:id,name,status,educational_level')->findOrFail($id);
         return response()->json($paymentPeriod);
     }
 

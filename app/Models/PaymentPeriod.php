@@ -16,7 +16,6 @@ class PaymentPeriod extends Model
         'semester',
         'fixed_cost',
         'credit_cost',
-        'is_deleted',
     ];
 
     public function institution()

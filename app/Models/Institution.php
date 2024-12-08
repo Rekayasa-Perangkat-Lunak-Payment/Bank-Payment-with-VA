@@ -30,4 +30,9 @@ class Institution extends Model
     {
         return $this->hasMany(Student::class, 'institution_id', 'id');
     }
+
+    public function paymentPeriods()
+    {
+        return $this->hasMany(PaymentPeriod::class, 'institution_id', 'id');
+    }
 }

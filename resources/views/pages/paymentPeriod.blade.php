@@ -27,15 +27,15 @@
         </div>
     </form>
 
-    <!-- Students Table -->
+    <!-- Virtual Accounts Table -->
     <form id="virtual-account-form">
         <table class="table table-bordered">
             <thead>
                 <tr>
-                    <th>Select</th>
                     <th>Student Name</th>
                     <th>Email</th>
                     <th>Institution</th>
+                    <th>Virtual Account Number</th>
                 </tr>
             </thead>
             <tbody id="students-table-body">
@@ -44,102 +44,74 @@
                 </tr>
             </tbody>
         </table>
+
         <button type="submit" class="btn btn-success">Create Virtual Accounts</button>
     </form>
 @endsection
 
 @section('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const apiUrl = '/api/students'; // API endpoint for fetching students
             const createVirtualAccountUrl = '/api/virtualAccount'; // API endpoint for creating virtual accounts
-            const paymentPeriodId = "{{ $paymentPeriodId }}"; // Pass paymentPeriodId dynamically from controller
+            const paymentPeriodId = {{ $id }}; // Pass paymentPeriodId dynamically from controller
             const institutionNameElement = document.getElementById('institution-name');
             const paymentPeriodDetailsElement = document.getElementById('payment-period-details');
             const studentsTableBody = document.getElementById('students-table-body');
 
             // Load Institution and Payment Period Details
             function loadPaymentPeriodDetails() {
+                const monthNames = [
+                    "January", "February", "March", "April", "May", "June",
+                    "July", "August", "September", "October", "November", "December"
+                ];
+
                 fetch(`/api/paymentPeriod/${paymentPeriodId}`)
                     .then(response => response.json())
                     .then(data => {
+                        const monthName = monthNames[parseInt(data.month, 10) - 1]; // Convert numeric month to name
                         institutionNameElement.textContent = data.institution.name;
-                        paymentPeriodDetailsElement.textContent = `${data.year} - ${data.month} (${data.semester})`;
+                        paymentPeriodDetailsElement.textContent =
+                            `${data.year} - ${monthName} (${data.semester})`;
                     })
                     .catch(error => console.error('Error loading payment period details:', error));
             }
 
-            // Load Students
-            function loadStudents(filters = {}) {
+            // Load Virtual Accounts
+            function loadVirtualAccounts() {
                 studentsTableBody.innerHTML = '<tr><td colspan="4" class="text-center">Loading...</td></tr>';
 
-                const params = new URLSearchParams({ payment_period_id: paymentPeriodId, ...filters }).toString();
-                fetch(`${apiUrl}?${params}`)
+                fetch(`/api/virtualAccountList/${paymentPeriodId}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.length === 0) {
                             studentsTableBody.innerHTML =
-                                '<tr><td colspan="4" class="text-center">No students found</td></tr>';
+                                '<tr><td colspan="4" class="text-center">No virtual accounts found</td></tr>';
                             return;
                         }
 
-                        studentsTableBody.innerHTML = data.map(student => `
-                            <tr>
-                                <td>
-                                    <input type="checkbox" name="student_ids[]" value="${student.id}">
-                                </td>
-                                <td>${student.name}</td>
-                                <td>${student.email}</td>
-                                <td>${student.institution.name}</td>
-                            </tr>
-                        `).join('');
+                        studentsTableBody.innerHTML = data.map(va => {
+                            const student = va.invoice?.student;
+                            const institution = student?.institution;
+                            return `
+                                <tr>
+                                    <td>${student?.name || 'N/A'}</td>
+                                    <td>${student?.email || 'N/A'}</td>
+                                    <td>${institution?.name || 'N/A'}</td>
+                                    <td>${va.virtual_account_number || 'N/A'}</td>
+                                </tr>
+                            `;
+                        }).join('');
                     })
                     .catch(error => {
-                        console.error('Error loading students:', error);
+                        console.error('Error loading virtual accounts:', error);
                         studentsTableBody.innerHTML =
                             '<tr><td colspan="4" class="text-center">Failed to load data</td></tr>';
                     });
             }
 
-            // Handle Virtual Account Form Submission
-            document.getElementById('virtual-account-form').addEventListener('submit', function (e) {
-                e.preventDefault();
-
-                const selectedStudents = Array.from(document.querySelectorAll('input[name="student_ids[]"]:checked'))
-                    .map(input => input.value);
-
-                if (selectedStudents.length === 0) {
-                    alert('Please select at least one student.');
-                    return;
-                }
-
-                const data = {
-                    payment_period_id: paymentPeriodId,
-                    student_ids: selectedStudents
-                };
-
-                fetch(createVirtualAccountUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(data),
-                })
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.success) {
-                            alert('Virtual Accounts created successfully!');
-                            loadStudents(); // Reload students
-                        } else {
-                            alert('Failed to create Virtual Accounts.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error creating virtual accounts:', error);
-                        alert('An error occurred while creating Virtual Accounts.');
-                    });
-            });
-
-            // Filter Students
-            document.getElementById('filter-button').addEventListener('click', function () {
+            // Filter Students (Optional functionality, may need modifications depending on backend)
+            document.getElementById('filter-button').addEventListener('click', function() {
                 const filters = {
                     name: document.getElementById('filter-student-name').value,
                     email: document.getElementById('filter-student-email').value,
@@ -148,14 +120,14 @@
             });
 
             // Reset Filters
-            document.getElementById('reset-button').addEventListener('click', function () {
+            document.getElementById('reset-button').addEventListener('click', function() {
                 document.getElementById('filter-students-form').reset();
                 loadStudents();
             });
 
             // Initial Load
             loadPaymentPeriodDetails();
-            loadStudents();
+            loadVirtualAccounts();
         });
     </script>
 @endsection

@@ -129,6 +129,20 @@ class VirtualAccountController extends Controller
         return response()->json($virtualAccount);
     }
 
+    public function getVirtualAccountsByPaymentPeriod($id)
+    {
+        // Fetch virtual accounts related to the given payment period
+        $virtualAccounts = VirtualAccount::whereHas('invoice', function ($query) use ($id) {
+            $query->where('payment_period_id', $id);
+        })
+        ->with('invoice.student') // Load related student via invoice
+        ->get();
+    
+        return response()->json($virtualAccounts);
+    }
+    
+
+
     /**
      * Update the specified virtual account in storage.
      *

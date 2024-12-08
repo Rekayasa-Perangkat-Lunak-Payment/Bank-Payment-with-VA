@@ -47,6 +47,8 @@ Route::apiResource('virtualAccounts', VirtualAccountController::class);
 Route::apiResource('itemTypes', ItemTypeController::class);
 Route::apiResource('paymentPeriod', PaymentPeriodController::class);
 
+Route::get('/virtualAccountList/{id}', [VirtualAccountController::class, 'getVirtualAccountsByPaymentPeriod']);
+
 // Route::prefix('admin')->group(function () {
 //     Route::apiResource('institution-admins', InstitutionAdminController::class);
 //     Route::apiResource('bank-admins', BankAdminController::class);
