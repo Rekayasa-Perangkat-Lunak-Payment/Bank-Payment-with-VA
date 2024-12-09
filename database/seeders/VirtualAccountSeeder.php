@@ -17,7 +17,7 @@ class VirtualAccountSeeder extends Seeder
         VirtualAccount::create([
             'invoice_id' => 1,
             'virtual_account_number' => '1234567890',
-            'expired_at' => '2023-12-31',
+            'expired_at' => '2024-12-31',
             'total_amount' => 100000,
             'is_active' => true
         ]);

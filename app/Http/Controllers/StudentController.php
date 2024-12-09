@@ -4,10 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Student;
-use App\Models\PaymentPeriod;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\DB;
-
+use Illuminate\Http\Response;
 class StudentController extends Controller
 {
     public function index(Request $request)
@@ -116,6 +114,32 @@ class StudentController extends Controller
             return response()->json([
                 'message' => 'Student not found'
             ], 404);
+        }
+    }
+
+    public function login(Request $request)
+    {
+        // Validate the incoming request data
+        $validatedData = $request->validate([
+            'email' => 'required|email',
+            'password' => 'required|string|min:6',
+        ]);
+
+        // Find the student by email
+        $student = Student::where('email', $validatedData['email'])->first();
+
+        // Check if the student exists and the password matches
+        if ($student && Hash::check($validatedData['password'], $student->password)) {
+            // Authentication successful, return student data
+            return response()->json([
+                'message' => 'Login successful!',
+                'student' => $student,
+            ], Response::HTTP_OK);
+        } else {
+            // Authentication failed
+            return response()->json([
+                'message' => 'Invalid email or password',
+            ], Response::HTTP_UNAUTHORIZED);
         }
     }
 }

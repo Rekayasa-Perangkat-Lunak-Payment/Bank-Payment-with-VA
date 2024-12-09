@@ -25,7 +25,7 @@ class StudentSeeder extends Seeder
                 'email' => $faker->email,
                 'major' => $faker->jobTitle,
                 'phone' => $faker->phoneNumber,
-                'password' => $faker->ean8
+                'password' => 'password',
             ]);
         };
     }

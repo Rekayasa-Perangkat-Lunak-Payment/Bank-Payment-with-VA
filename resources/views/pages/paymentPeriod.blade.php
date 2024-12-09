@@ -104,15 +104,14 @@
                         className = 'badge badge-success';
                         break;
                     case 'Unpaid':
-                        // Custom yellow with dark text
-                        customStyle = 'background-color: #FFD700; color: #000;';
+                        className = 'background-color: #FFD700; color: #000;';
                         break;
                     default:
                         className = 'badge badge-secondary';
                 }
-                if (customStyle) {
-                    return `<span class="badge" style="${customStyle}">${status}</span>`;
-                }
+                // if (customStyle) {
+                //     return `<span class="badge" style="${customStyle}">${status}</span>`;
+                // }
                 return `<span class="${className}">${status}</span>`;
             }
 
@@ -150,7 +149,7 @@
                                     <td>${institution?.name || 'N/A'}</td>
                                     <td>${va.virtual_account_number || 'N/A'}</td>
                                     <td>${formatRupiah(va.total_amount)}</td>
-                                    <td>${getStatusWithColor(status)}</td>
+                                    <td>${getStatusWithColor(va.status)}</td>
                                 </tr>
                             `;
                         }).join('');

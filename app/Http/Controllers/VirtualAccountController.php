@@ -37,11 +37,14 @@ class VirtualAccountController extends Controller
             // Check if the virtual account has a corresponding transaction
             $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
 
+            // Determine if the virtual account is expired
+            $isExpired = now()->greaterThan($virtualAccount->expired_at);
+
             // Determine status
             $status = 'Unpaid';
             if ($isPaid) {
                 $status = 'Paid';
-            } elseif ($virtualAccount->is_expired) {
+            } elseif ($isExpired) {
                 $status = 'Expired';
             }
 
@@ -53,6 +56,7 @@ class VirtualAccountController extends Controller
 
         return response()->json($invoices);
     }
+
 
 
     /**
@@ -138,11 +142,45 @@ class VirtualAccountController extends Controller
         $virtualAccounts = VirtualAccount::whereHas('invoice', function ($query) use ($id) {
             $query->where('payment_period_id', $id);
         })
-            ->with('invoice.student.institution') // Load related student via invoice
-            ->get();
+            ->with([
+                'invoice' => function ($query) {
+                    $query->select('id', 'student_id', 'payment_period_id', 'total_amount');
+                },
+                'invoice.student' => function ($query) {
+                    $query->select('id', 'student_id', 'name');
+                },
+                'invoice.paymentPeriod' => function ($query) {
+                    $query->select('id', 'month', 'year', 'semester');
+                },
+                'invoice.invoiceItems.itemType' => function ($query) {
+                    $query->select('id', 'name', 'description');
+                }
+            ])
+            ->get()
+            ->map(function ($virtualAccount) {
+                // Check if the virtual account has a corresponding transaction
+                $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
+
+                // Determine if the virtual account is expired
+                $isExpired = now()->greaterThan($virtualAccount->expired_at);
+
+                // Determine status
+                $status = 'Unpaid';
+                if ($isPaid) {
+                    $status = 'Paid';
+                } elseif ($isExpired) {
+                    $status = 'Expired';
+                }
+
+                // Append status to the virtual account data
+                $virtualAccount->status = $status;
+
+                return $virtualAccount;
+            });
 
         return response()->json($virtualAccounts);
     }
+
 
     public function storeBulkVirtualAccounts(Request $request)
     {
@@ -228,9 +266,6 @@ class VirtualAccountController extends Controller
             'majors' => $majors,
         ]);
     }
-
-
-
 
     /**
      * Update the specified virtual account in storage.

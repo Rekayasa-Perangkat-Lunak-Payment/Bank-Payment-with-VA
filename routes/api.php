@@ -51,6 +51,7 @@ Route::get('/virtualAccountList/{id}', [VirtualAccountController::class, 'getVir
 Route::post('/bulk-virtual-accounts', [VirtualAccountController::class, 'storeBulkVirtualAccounts']);
 Route::get('/students/paymentPeriod/{paymentPeriodId}', [VirtualAccountController::class, 'getStudentsByPaymentPeriod']);
 Route::get('/available-filter-options/{paymentPeriodId}', [VirtualAccountController::class, 'getAvailableFilterOptions']);
+Route::post('/students/login', [StudentController::class, 'login']);
 // Route::prefix('admin')->group(function () {
 //     Route::apiResource('institution-admins', InstitutionAdminController::class);
 //     Route::apiResource('bank-admins', BankAdminController::class);

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use Symfony\Component\HttpFoundation\Response;
+use App\Models\VirtualAccount;
 
 class TransactionController extends Controller
 {
@@ -28,15 +29,42 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'virtual_account_id' => 'required|exists:virtual_accounts,id',
-            'transaction_date' => 'required|date',
+            'virtual_account_number' => 'required|string',
+            'transaction_date' => 'required|date|before_or_equal:today',
             'total' => 'required|numeric|min:0',
         ]);
 
-        $transaction = Transaction::create($request->all());
+        // Find the Virtual Account by virtual_account_number
+        $virtualAccount = VirtualAccount::where('virtual_account_number', $request->virtual_account_number)->first();
+
+        if (!$virtualAccount || !$virtualAccount->is_active) {
+            return response()->json(['message' => 'Virtual Account not found or is inactive'], Response::HTTP_NOT_FOUND);
+        }
+
+        if (now()->greaterThan($virtualAccount->expired_at)) {
+            return response()->json(['message' => 'Virtual Account is expired'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Check if the total amount matches the Virtual Account's total_amount
+        if ((float)$request->total !== (float)$virtualAccount->total_amount) {
+            return response()->json(['message' => 'Invalid transaction amount'], Response::HTTP_BAD_REQUEST);
+        }
+
+        // Create the transaction
+        $transaction = \App\Models\Transaction::create([
+            'virtual_account_id' => $virtualAccount->id,
+            'transaction_date' => $request->transaction_date,
+            'total' => $request->total,
+        ]);
+
+        // Mark the Virtual Account as inactive
+        $virtualAccount->update(['is_active' => 0]);
 
         return response()->json($transaction, Response::HTTP_CREATED);
     }
+
+
+
 
     /**
      * Display the specified transaction.
