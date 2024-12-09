@@ -29,23 +29,29 @@
 
     <!-- Virtual Accounts Table -->
     <form id="virtual-account-form">
-        <table class="table table-bordered">
-            <thead>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
                 <tr>
                     <th>Student Name</th>
-                    <th>Email</th>
                     <th>Institution</th>
                     <th>Virtual Account Number</th>
+                    <th>Total Amount</th>
+                    <th>Status</th>
                 </tr>
             </thead>
             <tbody id="students-table-body">
                 <tr>
-                    <td colspan="4" class="text-center">Loading...</td>
+                    <td colspan="5" class="text-center">Loading...</td>
                 </tr>
             </tbody>
         </table>
 
-        <button type="submit" class="btn btn-success">Create Virtual Accounts</button>
+
+        <a href="{{ url('/virtualAccountCreate/' . $id) }}" class="btn btn-success">
+            Create Virtual Accounts
+        </a>        
+        
+        
     </form>
 @endsection
 
@@ -69,36 +75,82 @@
                 fetch(`/api/paymentPeriod/${paymentPeriodId}`)
                     .then(response => response.json())
                     .then(data => {
-                        const monthName = monthNames[parseInt(data.month, 10) - 1]; // Convert numeric month to name
+                        const monthName = monthNames[parseInt(data.month, 10) -
+                            1]; // Convert numeric month to name
                         institutionNameElement.textContent = data.institution.name;
                         paymentPeriodDetailsElement.textContent =
                             `${data.year} - ${monthName} (${data.semester})`;
                     })
                     .catch(error => console.error('Error loading payment period details:', error));
             }
+            // Utility function to format numbers into Rupiah
+            function formatRupiah(amount) {
+                if (amount == null) return 'N/A';
+                return new Intl.NumberFormat('id-ID', {
+                    style: 'currency',
+                    currency: 'IDR',
+                    minimumFractionDigits: 0,
+                }).format(amount);
+            }
+
+            // Function to get status with colored labels
+            function getStatusWithColor(status) {
+                let className = '';
+                switch (status) {
+                    case 'Expired':
+                        className = 'badge badge-danger';
+                        break;
+                    case 'Paid':
+                        className = 'badge badge-success';
+                        break;
+                    case 'Unpaid':
+                        // Custom yellow with dark text
+                        customStyle = 'background-color: #FFD700; color: #000;';
+                        break;
+                    default:
+                        className = 'badge badge-secondary';
+                }
+                if (customStyle) {
+                    return `<span class="badge" style="${customStyle}">${status}</span>`;
+                }
+                return `<span class="${className}">${status}</span>`;
+            }
+
+            // Function to determine the status
+            function determineStatus(va) {
+                const now = new Date();
+                const expiredDate = new Date(va.expired_date);
+
+                if (expiredDate < now) {
+                    return 'Expired';
+                }
+                return va.is_active === 0 ? 'Paid' : 'Unpaid';
+            }
 
             // Load Virtual Accounts
             function loadVirtualAccounts() {
-                studentsTableBody.innerHTML = '<tr><td colspan="4" class="text-center">Loading...</td></tr>';
+                studentsTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
 
                 fetch(`/api/virtualAccountList/${paymentPeriodId}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.length === 0) {
                             studentsTableBody.innerHTML =
-                                '<tr><td colspan="4" class="text-center">No virtual accounts found</td></tr>';
+                                '<tr><td colspan="5" class="text-center">No virtual accounts found</td></tr>';
                             return;
                         }
 
                         studentsTableBody.innerHTML = data.map(va => {
                             const student = va.invoice?.student;
                             const institution = student?.institution;
+                            const status = determineStatus(va);
                             return `
                                 <tr>
                                     <td>${student?.name || 'N/A'}</td>
-                                    <td>${student?.email || 'N/A'}</td>
                                     <td>${institution?.name || 'N/A'}</td>
                                     <td>${va.virtual_account_number || 'N/A'}</td>
+                                    <td>${formatRupiah(va.total_amount)}</td>
+                                    <td>${getStatusWithColor(status)}</td>
                                 </tr>
                             `;
                         }).join('');
@@ -106,7 +158,7 @@
                     .catch(error => {
                         console.error('Error loading virtual accounts:', error);
                         studentsTableBody.innerHTML =
-                            '<tr><td colspan="4" class="text-center">Failed to load data</td></tr>';
+                            '<tr><td colspan="5" class="text-center">Failed to load data</td></tr>';
                     });
             }
 

@@ -5,8 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\VirtualAccount;
 use App\Models\Transaction;
+use App\Models\PaymentPeriod;
+use App\Models\Student;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\DB;
 
 class VirtualAccountController extends Controller
 {
@@ -135,12 +138,98 @@ class VirtualAccountController extends Controller
         $virtualAccounts = VirtualAccount::whereHas('invoice', function ($query) use ($id) {
             $query->where('payment_period_id', $id);
         })
-        ->with('invoice.student') // Load related student via invoice
-        ->get();
-    
+            ->with('invoice.student.institution') // Load related student via invoice
+            ->get();
+
         return response()->json($virtualAccounts);
     }
-    
+
+    public function storeBulkVirtualAccounts(Request $request)
+    {
+        // Validate the request
+        $request->validate([
+            'payment_period_id' => 'required|exists:payment_periods,id',
+            'students' => 'required|array',
+            'students.*' => 'exists:students,id',
+        ]);
+
+        $paymentPeriodId = $request->input('payment_period_id');
+        $students = $request->input('students');
+
+        // Start a transaction to ensure all inserts succeed or fail together
+        DB::beginTransaction();
+
+        try {
+            foreach ($students as $studentId) {
+                VirtualAccount::create([
+                    'student_id' => $studentId,
+                    'payment_period_id' => $paymentPeriodId,
+                    'virtual_account_number' => $this->generateVirtualAccountNumber(),
+                    'total_amount' => 0, // Set default or calculated amount
+                    'is_active' => 1,
+                    'expired_date' => now()->addMonths(1), // Example expiry logic
+                ]);
+            }
+
+            // Commit the transaction if all inserts succeed
+            DB::commit();
+
+            return response()->json(['message' => 'Virtual accounts created successfully!'], 201);
+        } catch (\Exception $e) {
+            // Rollback the transaction if something goes wrong
+            DB::rollBack();
+
+            // Log the error for debugging
+            \Log::error('Error creating bulk virtual accounts: ' . $e->getMessage());
+
+            return response()->json(['message' => 'Failed to create virtual accounts. Please try again.'], 500);
+        }
+    }
+
+
+    // Helper function to generate unique virtual account numbers
+    private function generateVirtualAccountNumber()
+    {
+        // Simple example of generating a random number, adjust as needed for your use case
+        return 'VA' . str_pad(rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+    }
+
+
+    public function getStudentsByPaymentPeriod(Request $request, $paymentPeriodId)
+    {
+        $paymentPeriod = PaymentPeriod::with('institution')->findOrFail($paymentPeriodId);
+        $institutionId = $paymentPeriod->institution_id;
+
+        $query = Student::where('institution_id', $institutionId);
+
+        if ($request->has('year')) {
+            $query->where('year', $request->input('year'));
+        }
+
+        if ($request->has('major')) {
+            $query->where('major', $request->input('major'));
+        }
+
+        return response()->json($query->get());
+    }
+
+    public function getAvailableFilterOptions($paymentPeriodId)
+    {
+        // Get the payment period and related institution
+        $paymentPeriod = PaymentPeriod::with('institution')->findOrFail($paymentPeriodId);
+        $institutionId = $paymentPeriod->institution_id;
+
+        // Get unique years and majors for students in this institution
+        $years = Student::where('institution_id', $institutionId)->pluck('year')->unique()->values();
+        $majors = Student::where('institution_id', $institutionId)->pluck('major')->unique()->values();
+
+        return response()->json([
+            'years' => $years,
+            'majors' => $majors,
+        ]);
+    }
+
+
 
 
     /**
