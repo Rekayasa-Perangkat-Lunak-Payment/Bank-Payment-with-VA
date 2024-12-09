@@ -14,11 +14,52 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+        /**
+     * Display a listing of transactions.
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function index()
     {
-        $transactions = Transaction::all();
-        return response()->json($transactions, Response::HTTP_OK);
+        $transactions = Transaction::with([
+            'virtual_account.invoice.student',
+            'virtual_account.invoice.paymentPeriod.institution',
+            'virtual_account.invoice.invoiceItems',
+        ])
+            ->get()
+            ->map(function ($transaction) {
+                // Append status to the virtual account
+                if ($transaction->virtual_account) {
+                    $transaction->virtual_account->status = $this->determineVirtualAccountStatus($transaction->virtual_account);
+                }
+                return $transaction;
+            });
+
+        return response()->json($transactions);
     }
+
+    /**
+     * Reusable method to determine the status of a virtual account.
+     *
+     * @param \App\Models\VirtualAccount $virtualAccount
+     * @return string
+     */
+    protected function determineVirtualAccountStatus($virtualAccount)
+    {
+        $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
+        $isExpired = now()->greaterThan($virtualAccount->expired_at);
+
+        if ($isPaid) {
+            return 'Paid';
+        }
+
+        if ($isExpired) {
+            return 'Expired';
+        }
+
+        return 'Unpaid';
+    }
+
 
     /**
      * Store a newly created transaction in storage.

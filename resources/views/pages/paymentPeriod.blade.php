@@ -49,9 +49,9 @@
 
         <a href="{{ url('/virtualAccountCreate/' . $id) }}" class="btn btn-success">
             Create Virtual Accounts
-        </a>        
-        
-        
+        </a>
+
+
     </form>
 @endsection
 
@@ -96,24 +96,34 @@
             // Function to get status with colored labels
             function getStatusWithColor(status) {
                 let className = '';
+                let style = ''; // Variable to store custom inline styles
+
                 switch (status) {
                     case 'Expired':
-                        className = 'badge badge-danger';
+                        // Use background color and text color inline for contrast
+                        className = 'badge';
+                        style = 'background-color: #dc3545; color: #fff;'; // Red background with white text
                         break;
                     case 'Paid':
-                        className = 'badge badge-success';
+                        // Use background color and text color inline for contrast
+                        className = 'badge';
+                        style = 'background-color: #28a745; color: #fff;'; // Green background with white text
                         break;
                     case 'Unpaid':
-                        className = 'background-color: #FFD700; color: #000;';
+                        // Use custom background and text color for Unpaid
+                        className = 'badge';
+                        style = 'background-color: #FFD700; color: #000;'; // Yellow background with black text
                         break;
                     default:
+                        // Use neutral style for any unknown status
                         className = 'badge badge-secondary';
+                        style = ''; // Default no custom style
                 }
-                // if (customStyle) {
-                //     return `<span class="badge" style="${customStyle}">${status}</span>`;
-                // }
-                return `<span class="${className}">${status}</span>`;
+
+                // Return span with inline styles for all statuses
+                return `<span class="${className}" style="${style}">${status}</span>`;
             }
+
 
             // Function to determine the status
             function determineStatus(va) {
