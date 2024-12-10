@@ -27,7 +27,7 @@ class PageController extends Controller
         // }else{
         //     return view('pages.login');
         // }
-        return view('pages.dashboardBank');
+        return view('pages.dashboardInstitution');
     }
 
     public function settingsPage()

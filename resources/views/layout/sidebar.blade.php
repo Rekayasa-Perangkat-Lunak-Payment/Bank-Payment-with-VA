@@ -41,9 +41,9 @@
                     </li>
 
                     <li>
-                        <a href="/paymentHistory" class="waves-effect">
+                        <a href="/paymentPeriodList" class="waves-effect">
                             <i class="ri-history-line"></i>
-                            <span>Payment History</span>
+                            <span>Payment Period</span>
                         </a>
                     </li>
 

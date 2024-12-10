@@ -6,13 +6,13 @@
                 <a href="/" class="logo logo-light">
                     <span class="logo-sm">
                         {{-- logo closed --}}
-                        {{-- <img src="assets/images/logo-dummin2.png" alt="logo-sm-light" height="22"> --}}
-                        <span class="fs-4">IPay</span>
+                        <img src="assets/images/logo-putih.png" alt="logo-sm-light" height="190">
+                        {{-- <span class="fs-4">IPay</span> --}}
                     </span>
                     <span class="logo-lg">
                         {{-- logo open --}}
-                        {{-- <img src="assets/images/logo-light.png" alt="logo-light" height="22"> --}}
-                        <span class="fw-bolder fs-3 light">Institute Pay</span>
+                        <img src="assets/images/logo-putih.png" alt="logo-light" height="190">
+                        {{-- <span class="fw-bolder fs-3 light">Institute Pay</span> --}}
                     </span>
                 </a>
             </div>

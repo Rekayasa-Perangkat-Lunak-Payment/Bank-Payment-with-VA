@@ -14,29 +14,39 @@ class TransactionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-        /**
+    /**
      * Display a listing of transactions.
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $transactions = Transaction::with([
             'virtual_account.invoice.student',
             'virtual_account.invoice.paymentPeriod.institution',
             'virtual_account.invoice.invoiceItems',
         ])
-            ->get()
-            ->map(function ($transaction) {
-                // Append status to the virtual account
-                if ($transaction->virtual_account) {
-                    $transaction->virtual_account->status = $this->determineVirtualAccountStatus($transaction->virtual_account);
-                }
-                return $transaction;
-            });
+            ->paginate(10); // Paginate results, 10 items per page
 
-        return response()->json($transactions);
+        // Transform the data
+        $data = $transactions->items(); // Retrieve the paginated data as an array
+        $data = array_map(function ($transaction) {
+            if ($transaction['virtual_account']) {
+                $transaction['virtual_account']['status'] = $this->determineVirtualAccountStatus((object)$transaction['virtual_account']);
+            }
+            return $transaction;
+        }, $data);
+
+        // Replace the transformed data back into the paginator
+        return response()->json([
+            'current_page' => $transactions->currentPage(),
+            'last_page' => $transactions->lastPage(),
+            'per_page' => $transactions->perPage(),
+            'total' => $transactions->total(),
+            'data' => $data,
+        ]);
     }
+
 
     /**
      * Reusable method to determine the status of a virtual account.
