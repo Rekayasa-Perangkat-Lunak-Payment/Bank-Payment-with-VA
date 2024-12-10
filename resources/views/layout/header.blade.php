@@ -1,32 +1,37 @@
 <header id="page-topbar">
     <div class="navbar-header">
-        <div class="d-flex">
+        <div class="d-flex align-items-center">
             <!-- LOGO -->
             <div class="navbar-brand-box">
-                <a href="index.html" class="logo logo-light">
+                <a href="/" class="logo logo-light">
                     <span class="logo-sm">
                         {{-- logo closed --}}
                         {{-- <img src="assets/images/logo-dummin2.png" alt="logo-sm-light" height="22"> --}}
-                        <span class="fs-4">
-                            IPay
-                        </span>
+                        <span class="fs-4">IPay</span>
                     </span>
                     <span class="logo-lg">
                         {{-- logo open --}}
                         {{-- <img src="assets/images/logo-light.png" alt="logo-light" height="22"> --}}
-                        <span class="fw-bolder fs-3 light">
-                            Insititute Pay
-                        </span>
+                        <span class="fw-bolder fs-3 light">Institute Pay</span>
                     </span>
                 </a>
             </div>
 
-            <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect" id="vertical-menu-btn">
-                <i class="ri-menu-2-line align-middle"></i>
-            </button>
+            <!-- Menu Button -->
+            <div class="ms-3">
+                <button type="button" class="btn btn-sm px-3 font-size-24 header-item waves-effect" id="vertical-menu-btn">
+                    <i class="ri-menu-2-line align-middle"></i>
+                </button>
+            </div>
         </div>
 
-        <div class="d-flex">
+        <div class="d-flex align-items-center justify-content-between w-100">
+            <!-- Page Title -->
+            <div class="d-flex align-items-center ms-3">
+                <h4 class="mb-0" style="color: #fff">@yield('page-title')</h4>
+            </div>
+
+            <!-- User Dropdown -->
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

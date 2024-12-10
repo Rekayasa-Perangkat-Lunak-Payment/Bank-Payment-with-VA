@@ -2,7 +2,7 @@
 
 @section('title', 'Dashboard')
 
-@section('page-title', 'Dashboard Overview')
+@section('page-title', 'Institute List')
 
 @section('content')
     <div class="row">

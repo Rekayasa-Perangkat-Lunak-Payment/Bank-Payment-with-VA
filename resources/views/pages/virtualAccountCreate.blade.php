@@ -143,8 +143,32 @@
                     });
             }
 
+            // Function to add an invoice item for a student
+            window.addInvoiceItem = function(studentId) {
+                const invoiceItemsContainer = document.getElementById(`invoice-items-container-${studentId}`);
+                loadItemTypes().then(itemTypes => {
+                    const newItemHTML = `
+                        <div class="invoice-item">
+                            <select name="invoice_item_type[${studentId}][]" class="form-control">
+                                <option value="">Select Item Type</option>
+                                ${itemTypes.map(itemType => `
+                                            <option value="${itemType.id}">${itemType.name}</option>
+                                        `).join('')}
+                            </select>
+                            <input type="text" name="invoice_item_description[${studentId}][]" placeholder="Description" class="form-control">
+                            <input type="number" name="invoice_item_amount[${studentId}][]" placeholder="Amount" class="form-control">
+                            <button type="button" class="btn btn-danger" onclick="removeInvoiceItem(this)">Remove</button>
+                        </div>
+                    `;
+                    invoiceItemsContainer.insertAdjacentHTML('beforeend', newItemHTML);
+                });
+            };
 
-            // Fetch students with applied filters, including invoices and items (if applicable)
+            // Function to remove an invoice item
+            window.removeInvoiceItem = function(button) {
+                button.parentElement.remove();
+            };
+
             // Fetch students with applied filters, including invoices and items (if applicable)
             async function fetchStudents() {
                 const selectedYear = filterYear.value;
@@ -162,7 +186,6 @@
                 const queryString = new URLSearchParams(filterParams).toString();
                 const url = queryString ? `${apiUrl}?${queryString}` : apiUrl;
 
-                // Fetch students
                 try {
                     const response = await fetch(url);
                     const students = await response.json();
@@ -173,39 +196,28 @@
                         return;
                     }
 
-                    // Fetch ItemTypes for the institution
-                    const itemTypes = await loadItemTypes();
-
-                    // Render students with invoice items
                     tableBody.innerHTML = students.map(student => `
-            <tr>
-                <td><input type="checkbox" class="student-checkbox" name="students[]" value="${student.id}"></td>
-                <td>${student.name}</td>
-                <td>${student.major}</td>
-                <td>
-                    <div id="invoices-${student.id}">
-                        <label>Select Invoice Items for Student #${student.id}:</label>
-                        
-                        <select name="invoice_item_type[${student.id}]" class="form-control">
-                            <option value="">Select Item Type</option>
-                            ${itemTypes.map(itemType => `
-                                    <option value="${itemType.id}">${itemType.name}</option>
-                                `).join('')}
-                        </select>
-
-                        <input type="text" name="invoice_item_description[${student.id}]" placeholder="Description" class="form-control">
-                        <input type="number" name="invoice_item_amount[${student.id}]" placeholder="Amount" class="form-control">
-                    </div>
-                </td>
-            </tr>
-        `).join('');
+                        <tr>
+                            <td><input type="checkbox" class="student-checkbox" name="students[]" value="${student.id}"></td>
+                            <td>${student.name}</td>
+                            <td>${student.major}</td>
+                            <td>
+                                <div id="invoices-${student.id}">
+                                    <label>Select Invoice Items for Student #${student.id}:</label>
+                                    <div class="invoice-items-container" id="invoice-items-container-${student.id}">
+                                        <!-- Invoice item select fields will be added here dynamically -->
+                                    </div>
+                                    <button type="button" class="btn btn-secondary" onclick="addInvoiceItem(${student.id})">Add Invoice Item</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
                 } catch (error) {
                     console.error('Error fetching students:', error);
                     tableBody.innerHTML =
                         `<tr><td colspan="5" class="text-center text-danger">Failed to load students. Please try again later.</td></tr>`;
                 }
             }
-
 
             // Handle Select All checkbox toggle
             selectAllCheckbox.addEventListener('change', function() {
@@ -214,13 +226,6 @@
                 studentCheckboxes.forEach(checkbox => {
                     checkbox.checked = isChecked;
                 });
-            });
-
-            // Check if all student checkboxes are selected, then check the "Select All" checkbox
-            tableBody.addEventListener('change', function() {
-                const studentCheckboxes = document.querySelectorAll('.student-checkbox');
-                const allSelected = Array.from(studentCheckboxes).every(checkbox => checkbox.checked);
-                selectAllCheckbox.checked = allSelected;
             });
 
             // Event listeners for filter changes
@@ -238,17 +243,28 @@
 
                 const selectedStudents = Array.from(form.querySelectorAll(
                     'input[name="students[]"]:checked')).map(input => input.value);
+
                 const invoiceItems = Array.from(form.querySelectorAll('[name^="invoice_item_type"]')).map(
-                    select => ({
-                        student_id: select.name.match(/\d+/)[0],
-                        item_type_id: select.value,
-                        description: document.querySelector(
-                                `[name="invoice_item_description[${select.name.match(/\d+/)[0]}]"]`)
-                            .value,
-                        amount: document.querySelector(
-                                `[name="invoice_item_amount[${select.name.match(/\d+/)[0]}]"]`)
-                            .value
-                    }));
+                    select => {
+                        const studentId = select.name.match(/\d+/)[0];
+                        const descriptionElement = document.querySelector(
+                            `[name="invoice_item_description[${studentId}][]"]`
+                        );
+                        const amountElement = document.querySelector(
+                            `[name="invoice_item_amount[${studentId}][]"]`
+                        );
+
+                        return {
+                            student_id: studentId,
+                            item_type_id: select.value,
+                            description: descriptionElement ? descriptionElement.value :
+                            '', // Check if description element exists
+                            amount: amountElement ? amountElement.value :
+                                '' // Check if amount element exists
+                        };
+                    }
+                );
+
 
                 const creditCost = creditCostInput.value;
                 const fixedCost = fixedCostInput.value;

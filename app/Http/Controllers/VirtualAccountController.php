@@ -59,7 +59,15 @@ class VirtualAccountController extends Controller
         return response()->json($invoices);
     }
 
+    // Helper function to generate unique virtual account numbers
+    public function generateVirtualAccountNumber(string $studentId, string $paymentPeriod)
+    {
+        // Get the current date in 'YYYYMMDD' format
+        $date = now()->format('Ymd');
 
+        // Combine the payment period, student ID, date, and a random 6-digit number
+        return $paymentPeriod . $studentId . $date . str_pad(rand(100, 999), 4, '0', STR_PAD_LEFT);
+    }
 
     /**
      * Store a newly created virtual account in storage.
@@ -80,7 +88,7 @@ class VirtualAccountController extends Controller
 
         // Generate the virtual account number based on NIM, School ID, and timestamp
         $timestamp = Carbon::now()->format('YmdHis');
-        $virtualAccountNumber = generateVirtualAccountNumber($request->nim, $request->institution_id, $timestamp);
+        $virtualAccountNumber = $this->generateVirtualAccountNumber($request->nim, $request->institution_id, $timestamp);
 
         $virtualAccount = VirtualAccount::create([
             'invoice_id' => $request->invoice_id,
@@ -202,10 +210,10 @@ class VirtualAccountController extends Controller
     {
         $paymentPeriodId = $request->payment_period_id;
         $students = $request->students;
-        $invoices = $request->invoices; // This will be an array of invoice data
+        $invoiceItems = $request->invoice_items; // Flat array of invoice items
         $creditCost = $request->credit_cost;
         $fixedCost = $request->fixed_cost;
-        // Loop over selected students
+
         foreach ($students as $studentId) {
             $student = Student::findOrFail($studentId);
 
@@ -213,51 +221,47 @@ class VirtualAccountController extends Controller
             $invoice = Invoice::create([
                 'student_id' => $studentId,
                 'payment_period_id' => $paymentPeriodId,
-                'total_amount' => $fixedCost, // Assuming these are the total costs
+                'total_amount' => $fixedCost, // Initial total amount is fixed cost
             ]);
 
-            // Loop over each invoice and create the invoice items
-            if (isset($invoices[$studentId])) {
-                foreach ($invoices[$studentId] as $invoiceData) {
-                    foreach ($invoiceData['invoice_ids'] as $invoiceId) {
-                        // Create the invoice item
-                        InvoiceItem::create([
-                            'invoice_id' => $invoiceId,
-                            'item_type_id' => $invoiceData['item_type_id'], // Assuming the item_type_id is passed
-                            'description' => $invoiceData['description'], // Adjust description as needed
-                            'unit_price' => $invoiceData['unit_price'], // Adjust as needed
-                            'quantity' => 1, // Adjust quantity as needed
-                            'price' => $invoiceData['unit_price'] * $invoiceData['quantity'], // Adjust price logic as needed
-                        ]);
-                    }
+            // Add invoice items for the student
+            $totalInvoiceAmount = $fixedCost; // Start with the fixed cost
+
+            foreach ($invoiceItems as $item) {
+                // Check if the item belongs to the current student
+                if ($item['student_id'] == $studentId) {
+                    $invoiceItem = InvoiceItem::create([
+                        'invoice_id' => $invoice->id,
+                        'item_type_id' => $item['item_type_id'],
+                        'description' => $item['description'],
+                        'unit_price' => $item['amount'],
+                        'quantity' => 1, // Default to 1 for simplicity
+                        'price' => $item['amount'], // Total price is the amount for one item
+                    ]);
+
+                    // Add the item's amount to the total invoice amount
+                    $totalInvoiceAmount += $item['amount'];
                 }
             }
 
-            $virtualAccountNumber = generateVirtualAccountNumber($request->nim, $paymentPeriodId);
+            // Update the total amount on the invoice
+            $invoice->update(['total_amount' => $totalInvoiceAmount]);
 
+            // Generate the virtual account number for the student
+            $virtualAccountNumber = $this->generateVirtualAccountNumber($student->student_id, $paymentPeriodId);
+
+            // Create the virtual account
             VirtualAccount::create([
-                'invoice_id' => $request->invoice_id,
+                'invoice_id' => $invoice->id,
                 'virtual_account_number' => $virtualAccountNumber,
-                'expired_at' => $request->expired_at,
+                'expired_at' => Carbon::now()->addMonth(), // Add 1 month to the current date
                 'is_active' => $request->is_active ?? true,
-                'total_amount' => $request->nominal,
+                'total_amount' => $totalInvoiceAmount,
             ]);
         }
 
         return response()->json(['message' => 'Virtual accounts and invoices created successfully']);
     }
-
-
-    // Helper function to generate unique virtual account numbers
-    public function generateVirtualAccountNumber(string $studentId, string $paymentPeriod)
-    {
-        // Get the current date in 'YYYYMMDD' format
-        $date = now()->format('Ymd');
-
-        // Combine the payment period, student ID, date, and a random 6-digit number
-        return $paymentPeriod . $studentId . $date . str_pad(rand(100000, 999999), 4, '0', STR_PAD_LEFT);
-    }
-
 
     public function getStudentsByPaymentPeriod(Request $request, $paymentPeriodId)
     {

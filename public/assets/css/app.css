@@ -34,6 +34,7 @@ File: Main Css File
   font-display: swap;
   src: url("../fonts/inter-bold.woff2?v=3.13") format("woff2"), url("../fonts/iter-bold.woff?v=3.13") format("woff");
 }
+
 #page-topbar {
   position: fixed;
   top: 0;
