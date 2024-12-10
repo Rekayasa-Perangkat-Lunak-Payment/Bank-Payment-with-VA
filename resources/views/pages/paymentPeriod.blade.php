@@ -1,9 +1,8 @@
 @extends('layout.app')
 
-@section('title', 'Create Virtual Accounts')
-
+@section('title', 'Payment Period')
+@section('page-title', 'Virtual Account List')
 @section('content')
-    <h1>Virtual Accounts</h1>
 
     <!-- Institution and Payment Period Details -->
     <div class="mb-4">
@@ -47,7 +46,7 @@
         </table>
 
 
-        <a href="{{ url('/virtualAccountCreate/' . $id . '/' . $institutionId) }}" class="btn btn-success">
+        <a href="{{ url('/virtualAccountCreate/' . $id) }}" class="btn btn-success">
             Create Virtual Accounts
         </a>
 
@@ -61,7 +60,6 @@
             const apiUrl = '/api/students'; // API endpoint for fetching students
             const createVirtualAccountUrl = '/api/virtualAccount'; // API endpoint for creating virtual accounts
             const paymentPeriodId = {{ $id }}; // Pass paymentPeriodId dynamically from controller
-            const institution_id = {{ $institutionId }};
             const institutionNameElement = document.getElementById('institution-name');
             const paymentPeriodDetailsElement = document.getElementById('payment-period-details');
             const studentsTableBody = document.getElementById('students-table-body');

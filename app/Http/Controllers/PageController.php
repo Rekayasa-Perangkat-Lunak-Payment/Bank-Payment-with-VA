@@ -95,9 +95,9 @@ class PageController extends Controller
         return view('pages.paymentPeriodList');
     }
 
-    public function paymentPeriodPage($id, $institutionId)
+    public function paymentPeriodPage($id)
     {
-        return view('pages.paymentPeriod', compact('id', 'institutionId'));
+        return view('pages.paymentPeriod', compact('id'));
     }
 
     public function virtualAccountPage($id)

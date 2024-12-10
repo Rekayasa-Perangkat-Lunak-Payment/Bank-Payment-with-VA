@@ -64,7 +64,6 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const paymentPeriodId = {{ $paymentPeriodId }};
-            const apiUrl = `/api/students/paymentPeriod/${paymentPeriodId}`;
             const institutionNameElement = document.getElementById('institution-name');
             const paymentPeriodDetailsElement = document.getElementById('payment-period-details');
             const form = document.getElementById('bulk-create-form');
@@ -75,6 +74,7 @@
             const creditCostInput = document.getElementById('credit-cost');
             const fixedCostInput = document.getElementById('fixed-cost');
             const institutionId = {{ $institutionId }}; // Assuming the institution ID is passed to the page
+            const apiUrl = `/api/students/institution/${institutionId}`;
 
             // Fetch institution and payment period details
             function loadInstitutionAndPaymentPeriod() {

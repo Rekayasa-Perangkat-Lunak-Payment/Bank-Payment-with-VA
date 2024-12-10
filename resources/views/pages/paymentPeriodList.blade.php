@@ -1,7 +1,7 @@
 @extends('layout.app')
 
 @section('title', 'Payment Periods')
-
+@section('page-title', 'Payment Period List')
 @section('content')
     <h1>Payment Periods</h1>
 
@@ -131,7 +131,7 @@
                                 <td>${new Intl.NumberFormat('id-ID').format(paymentPeriod.fixed_cost)}</td>
                                 <td>${new Intl.NumberFormat('id-ID').format(paymentPeriod.credit_cost)}</td>
                                 <td>
-                                    <a href="/paymentPeriod/${paymentPeriod.id}/${paymentPeriod.institution.id}" class="btn btn-primary btn-sm">
+                                    <a href="/paymentPeriod/${paymentPeriod.id}" class="btn btn-primary btn-sm">
                                         View More
                                     </a>
                                 </td>

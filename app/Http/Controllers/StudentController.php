@@ -142,4 +142,30 @@ class StudentController extends Controller
             ], Response::HTTP_UNAUTHORIZED);
         }
     }
+
+    public function getStudentsByInstitution(Request $request, $institutionId)
+    {
+        // Start the query to fetch students by institution
+        $query = Student::where('institution_id', $institutionId)
+            ->with('institution'); // Eager load the institution relationship
+
+        // Apply filters for major and year if present in the request
+        if ($request->has('major')) {
+            $query->where('major', $request->input('major'));
+        }
+
+        if ($request->has('year')) {
+            $query->where('year', $request->input('year'));
+        }
+
+        // Execute the query
+        $students = $query->get();
+
+        // Check if students are found
+        if ($students->isEmpty()) {
+            return response()->json(['error' => 'No students found for the given institution'], 404);
+        }
+
+        return response()->json($students);
+    }
 }
