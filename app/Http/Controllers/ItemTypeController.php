@@ -14,6 +14,11 @@ class ItemTypeController extends Controller
         return response()->json($itemTypes);
     }
 
+    public function getInstitutionItemTypes($id) {
+        $itemTypes = ItemType::where('institution_id', $id)->where('is_deleted', false)->get(); // You can exclude deleted items
+        return response()->json($itemTypes);
+    }
+
     // Store a new item type
     public function store(Request $request)
     {

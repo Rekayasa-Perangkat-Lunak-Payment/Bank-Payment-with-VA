@@ -7,6 +7,8 @@ use App\Models\VirtualAccount;
 use App\Models\Transaction;
 use App\Models\PaymentPeriod;
 use App\Models\Student;
+use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use Carbon\Carbon;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
@@ -68,23 +70,24 @@ class VirtualAccountController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'invoice_id' => 'required|exists:invoices,id',
             'student_id' => 'required|exists:students,id',
-            'school_id' => 'required',
-            'NIM' => 'required',
+            'institution_id' => 'required',
+            'nim' => 'required',
             'expired_at' => 'required|date',
             'nominal' => 'required|numeric|min:0',
         ]);
 
         // Generate the virtual account number based on NIM, School ID, and timestamp
         $timestamp = Carbon::now()->format('YmdHis');
-        $virtualAccountNumber = $request->NIM . $request->school_id . $timestamp;
+        $virtualAccountNumber = generateVirtualAccountNumber($request->nim, $request->institution_id, $timestamp);
 
         $virtualAccount = VirtualAccount::create([
-            'student_id' => $request->student_id,
+            'invoice_id' => $request->invoice_id,
             'virtual_account_number' => $virtualAccountNumber,
             'expired_at' => $request->expired_at,
             'is_active' => $request->is_active ?? true,
-            'nominal' => $request->nominal,
+            'total_amount' => $request->nominal,
         ]);
 
         return response()->json($virtualAccount, Response::HTTP_CREATED);
@@ -122,7 +125,7 @@ class VirtualAccountController extends Controller
         // Check if the virtual account has a corresponding transaction
         $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
 
-        // Determine status
+        // Determine statust
         $status = 'Unpaid';
         if ($isPaid) {
             $status = 'Paid';
@@ -136,10 +139,10 @@ class VirtualAccountController extends Controller
         return response()->json($virtualAccount);
     }
 
-    public function getVirtualAccountsByPaymentPeriod($id)
+    public function getVirtualAccountsByPaymentPeriod(Request $request, $id)
     {
         // Fetch virtual accounts related to the given payment period
-        $virtualAccounts = VirtualAccount::whereHas('invoice', function ($query) use ($id) {
+        $query = VirtualAccount::whereHas('invoice', function ($query) use ($id) {
             $query->where('payment_period_id', $id);
         })
             ->with([
@@ -147,99 +150,129 @@ class VirtualAccountController extends Controller
                     $query->select('id', 'student_id', 'payment_period_id', 'total_amount');
                 },
                 'invoice.student' => function ($query) {
-                    $query->select('id', 'student_id', 'name');
+                    $query->select('id', 'name', 'institution_id');
+                },
+                'invoice.student.institution' => function ($query) {
+                    $query->select('id', 'name');
                 },
                 'invoice.paymentPeriod' => function ($query) {
                     $query->select('id', 'month', 'year', 'semester');
                 },
                 'invoice.invoiceItems.itemType' => function ($query) {
                     $query->select('id', 'name', 'description');
-                }
-            ])
-            ->get()
-            ->map(function ($virtualAccount) {
-                // Check if the virtual account has a corresponding transaction
-                $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
+                },
+            ]);
 
-                // Determine if the virtual account is expired
-                $isExpired = now()->greaterThan($virtualAccount->expired_at);
-
-                // Determine status
-                $status = 'Unpaid';
-                if ($isPaid) {
-                    $status = 'Paid';
-                } elseif ($isExpired) {
-                    $status = 'Expired';
-                }
-
-                // Append status to the virtual account data
-                $virtualAccount->status = $status;
-
-                return $virtualAccount;
+        // Apply filters based on request parameters
+        if ($request->has('name')) {
+            $query->whereHas('invoice.student', function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->name . '%');
             });
+        }
+
+        if ($request->has('virtual_account_number')) {
+            $query->where('virtual_account_number', 'like', '%' . $request->virtual_account_number . '%');
+        }
+
+        $virtualAccounts = $query->get()->map(function ($virtualAccount) {
+            // Check if the virtual account has a corresponding transaction
+            $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
+
+            // Determine if the virtual account is expired
+            $isExpired = now()->greaterThan($virtualAccount->expired_at);
+
+            // Determine status
+            $status = 'Unpaid';
+            if ($isPaid) {
+                $status = 'Paid';
+            } elseif ($isExpired) {
+                $status = 'Expired';
+            }
+
+            // Append status to the virtual account data
+            $virtualAccount->status = $status;
+
+            return $virtualAccount;
+        });
 
         return response()->json($virtualAccounts);
     }
 
-
     public function storeBulkVirtualAccounts(Request $request)
     {
-        // Validate the request
-        $request->validate([
-            'payment_period_id' => 'required|exists:payment_periods,id',
-            'students' => 'required|array',
-            'students.*' => 'exists:students,id',
-        ]);
+        $paymentPeriodId = $request->payment_period_id;
+        $students = $request->students;
+        $invoices = $request->invoices; // This will be an array of invoice data
+        $creditCost = $request->credit_cost;
+        $fixedCost = $request->fixed_cost;
+        // Loop over selected students
+        foreach ($students as $studentId) {
+            $student = Student::findOrFail($studentId);
 
-        $paymentPeriodId = $request->input('payment_period_id');
-        $students = $request->input('students');
+            // Create Invoice for the student
+            $invoice = Invoice::create([
+                'student_id' => $studentId,
+                'payment_period_id' => $paymentPeriodId,
+                'total_amount' => $fixedCost, // Assuming these are the total costs
+            ]);
 
-        // Start a transaction to ensure all inserts succeed or fail together
-        DB::beginTransaction();
-
-        try {
-            foreach ($students as $studentId) {
-                VirtualAccount::create([
-                    'student_id' => $studentId,
-                    'payment_period_id' => $paymentPeriodId,
-                    'virtual_account_number' => $this->generateVirtualAccountNumber(),
-                    'total_amount' => 0, // Set default or calculated amount
-                    'is_active' => 1,
-                    'expired_date' => now()->addMonths(1), // Example expiry logic
-                ]);
+            // Loop over each invoice and create the invoice items
+            if (isset($invoices[$studentId])) {
+                foreach ($invoices[$studentId] as $invoiceData) {
+                    foreach ($invoiceData['invoice_ids'] as $invoiceId) {
+                        // Create the invoice item
+                        InvoiceItem::create([
+                            'invoice_id' => $invoiceId,
+                            'item_type_id' => $invoiceData['item_type_id'], // Assuming the item_type_id is passed
+                            'description' => $invoiceData['description'], // Adjust description as needed
+                            'unit_price' => $invoiceData['unit_price'], // Adjust as needed
+                            'quantity' => 1, // Adjust quantity as needed
+                            'price' => $invoiceData['unit_price'] * $invoiceData['quantity'], // Adjust price logic as needed
+                        ]);
+                    }
+                }
             }
 
-            // Commit the transaction if all inserts succeed
-            DB::commit();
+            $virtualAccountNumber = generateVirtualAccountNumber($request->nim, $paymentPeriodId);
 
-            return response()->json(['message' => 'Virtual accounts created successfully!'], 201);
-        } catch (\Exception $e) {
-            // Rollback the transaction if something goes wrong
-            DB::rollBack();
-
-            // Log the error for debugging
-            \Log::error('Error creating bulk virtual accounts: ' . $e->getMessage());
-
-            return response()->json(['message' => 'Failed to create virtual accounts. Please try again.'], 500);
+            VirtualAccount::create([
+                'invoice_id' => $request->invoice_id,
+                'virtual_account_number' => $virtualAccountNumber,
+                'expired_at' => $request->expired_at,
+                'is_active' => $request->is_active ?? true,
+                'total_amount' => $request->nominal,
+            ]);
         }
+
+        return response()->json(['message' => 'Virtual accounts and invoices created successfully']);
     }
 
 
     // Helper function to generate unique virtual account numbers
-    private function generateVirtualAccountNumber()
+    public function generateVirtualAccountNumber(string $studentId, string $paymentPeriod)
     {
-        // Simple example of generating a random number, adjust as needed for your use case
-        return 'VA' . str_pad(rand(100000, 999999), 6, '0', STR_PAD_LEFT);
+        // Get the current date in 'YYYYMMDD' format
+        $date = now()->format('Ymd');
+
+        // Combine the payment period, student ID, date, and a random 6-digit number
+        return $paymentPeriod . $studentId . $date . str_pad(rand(100000, 999999), 4, '0', STR_PAD_LEFT);
     }
 
 
     public function getStudentsByPaymentPeriod(Request $request, $paymentPeriodId)
     {
+        // Fetch the payment period and institution
         $paymentPeriod = PaymentPeriod::with('institution')->findOrFail($paymentPeriodId);
         $institutionId = $paymentPeriod->institution_id;
 
-        $query = Student::where('institution_id', $institutionId);
+        // Start the query for students belonging to the institution
+        $query = Student::with(['invoices', 'invoices.invoiceItems.itemType']) // Adjusted eager loading for invoice items and itemType
+            ->where('institution_id', $institutionId)
+            ->whereHas('invoices', function ($invoiceQuery) use ($paymentPeriodId) {
+                $invoiceQuery->where('payment_period_id', $paymentPeriodId);
+            });
 
+        // Apply filters if present
         if ($request->has('year')) {
             $query->where('year', $request->input('year'));
         }
@@ -248,6 +281,7 @@ class VirtualAccountController extends Controller
             $query->where('major', $request->input('major'));
         }
 
+        // Return the filtered students with their invoices and item types
         return response()->json($query->get());
     }
 

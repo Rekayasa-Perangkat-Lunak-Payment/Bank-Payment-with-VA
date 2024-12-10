@@ -13,6 +13,7 @@ use App\Http\Controllers\InvoiceItemController;
 use App\Http\Controllers\VirtualAccountController;
 use App\Http\Controllers\ItemTypeController;
 use App\Http\Controllers\PaymentPeriodController;
+use App\Models\ItemType;
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +49,7 @@ Route::apiResource('itemTypes', ItemTypeController::class);
 Route::apiResource('paymentPeriod', PaymentPeriodController::class);
 
 Route::get('/virtualAccountList/{id}', [VirtualAccountController::class, 'getVirtualAccountsByPaymentPeriod']);
+Route::get('/institution/{institutionId}/itemTypes', [ItemTypeController::class, 'getInstitutionItemTypes']); // (/api/institution/${institutionId}/itemTypes)
 Route::post('/bulk-virtual-accounts', [VirtualAccountController::class, 'storeBulkVirtualAccounts']);
 Route::get('/students/paymentPeriod/{paymentPeriodId}', [VirtualAccountController::class, 'getStudentsByPaymentPeriod']);
 Route::get('/available-filter-options/{paymentPeriodId}', [VirtualAccountController::class, 'getAvailableFilterOptions']);

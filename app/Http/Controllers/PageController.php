@@ -95,9 +95,9 @@ class PageController extends Controller
         return view('pages.paymentPeriodList');
     }
 
-    public function paymentPeriodPage($id)
+    public function paymentPeriodPage($id, $institutionId)
     {
-        return view('pages.paymentPeriod', compact('id'));
+        return view('pages.paymentPeriod', compact('id', 'institutionId'));
     }
 
     public function virtualAccountPage($id)
@@ -130,8 +130,8 @@ class PageController extends Controller
         return view('pages.transaction', compact('id'));
     }
 
-    public function bulkCreateVirtualAccounts($paymentPeriodId)
+    public function bulkCreateVirtualAccounts($paymentPeriodId, $institutionId)
     {
-        return view('pages.virtualAccountCreate', ['paymentPeriodId' => $paymentPeriodId]);
+        return view('pages.virtualAccountCreate', ['paymentPeriodId' => $paymentPeriodId, 'institutionId' => $institutionId]);
     }
 }

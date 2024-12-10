@@ -11,7 +11,7 @@ class Student extends Model
     use HasFactory;
 
     protected $table = 'students';
-    
+
     protected $fillable = [
         'institution_id',
         'student_id',
@@ -34,5 +34,10 @@ class Student extends Model
     public function institution()
     {
         return $this->belongsTo(Institution::class);
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class);
     }
 }

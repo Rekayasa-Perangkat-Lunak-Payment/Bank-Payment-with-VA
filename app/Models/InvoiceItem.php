@@ -12,9 +12,9 @@ class InvoiceItem extends Model
     protected $hidden = ['created_at', 'updated_at'];
     protected $fillable = [
         'invoice_id',
-        'type',
+        'item_type_id',
         'description',
-        'cost',
+        'unit_price',
         'quantity',
         'price',
     ];

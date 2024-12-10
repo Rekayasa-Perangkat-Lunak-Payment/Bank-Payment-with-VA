@@ -27,9 +27,9 @@ Route::get('/addStudent', [PageController::class, 'addStudentPage']);
 Route::get('/student/{id}', [PageController::class, 'studentPage']);
 
 Route::get('/paymentPeriodList', [PageController::class, 'paymentPeriodListPage'])->name('paymentPeriodList');
-Route::get('/paymentPeriod/{id}', [PageController::class, 'paymentPeriodPage'])->name('paymentPeriod');
+Route::get('/paymentPeriod/{id}/{institutionId}', [PageController::class, 'paymentPeriodPage'])->name('paymentPeriod');
 
-Route::get('/virtualAccountCreate/{paymentPeriodId}', [PageController::class, 'bulkCreateVirtualAccounts']);
+Route::get('/virtualAccountCreate/{paymentPeriodId}/{institutionId}', [PageController::class, 'bulkCreateVirtualAccounts']);
 
 Route::get('/invoiceList', [PageController::class, 'invoiceListPage'])->name('invoiceList');
 Route::get('/invoice/{id}', [PageController::class, 'invoicePage'])->name('invoice');

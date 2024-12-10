@@ -3,7 +3,7 @@
 @section('title', 'Create Virtual Accounts')
 
 @section('content')
-    <h1>Create Virtual Accounts</h1>
+    <h1>Virtual Accounts</h1>
 
     <!-- Institution and Payment Period Details -->
     <div class="mb-4">
@@ -18,7 +18,7 @@
                 <input type="text" id="filter-student-name" class="form-control" placeholder="Search by Student Name">
             </div>
             <div class="col-md-6">
-                <input type="text" id="filter-student-email" class="form-control" placeholder="Search by Student Email">
+                <input type="text" id="filter-student-va" class="form-control" placeholder="Search by Virtual Account">
             </div>
         </div>
         <div class="mt-3">
@@ -47,7 +47,7 @@
         </table>
 
 
-        <a href="{{ url('/virtualAccountCreate/' . $id) }}" class="btn btn-success">
+        <a href="{{ url('/virtualAccountCreate/' . $id . '/' . $institutionId) }}" class="btn btn-success">
             Create Virtual Accounts
         </a>
 
@@ -61,6 +61,7 @@
             const apiUrl = '/api/students'; // API endpoint for fetching students
             const createVirtualAccountUrl = '/api/virtualAccount'; // API endpoint for creating virtual accounts
             const paymentPeriodId = {{ $id }}; // Pass paymentPeriodId dynamically from controller
+            const institution_id = {{ $institutionId }};
             const institutionNameElement = document.getElementById('institution-name');
             const paymentPeriodDetailsElement = document.getElementById('payment-period-details');
             const studentsTableBody = document.getElementById('students-table-body');
@@ -137,10 +138,13 @@
             }
 
             // Load Virtual Accounts
-            function loadVirtualAccounts() {
+            function loadVirtualAccounts(filters = {}) {
                 studentsTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Loading...</td></tr>';
 
-                fetch(`/api/virtualAccountList/${paymentPeriodId}`)
+                // Prepare query parameters for filtering
+                const queryParams = new URLSearchParams(filters);
+
+                fetch(`/api/virtualAccountList/${paymentPeriodId}?${queryParams.toString()}`)
                     .then(response => response.json())
                     .then(data => {
                         if (data.length === 0) {
@@ -154,14 +158,14 @@
                             const institution = student?.institution;
                             const status = determineStatus(va);
                             return `
-                                <tr>
-                                    <td>${student?.name || 'N/A'}</td>
-                                    <td>${institution?.name || 'N/A'}</td>
-                                    <td>${va.virtual_account_number || 'N/A'}</td>
-                                    <td>${formatRupiah(va.total_amount)}</td>
-                                    <td>${getStatusWithColor(va.status)}</td>
-                                </tr>
-                            `;
+                    <tr>
+                        <td>${student?.name || 'N/A'}</td>
+                        <td>${institution?.name || 'N/A'}</td>
+                        <td>${va.virtual_account_number || 'N/A'}</td>
+                        <td>${formatRupiah(va.total_amount)}</td>
+                        <td>${getStatusWithColor(status)}</td>
+                    </tr>
+                `;
                         }).join('');
                     })
                     .catch(error => {
@@ -171,20 +175,22 @@
                     });
             }
 
+
             // Filter Students (Optional functionality, may need modifications depending on backend)
             document.getElementById('filter-button').addEventListener('click', function() {
                 const filters = {
-                    name: document.getElementById('filter-student-name').value,
-                    email: document.getElementById('filter-student-email').value,
+                    name: document.getElementById('filter-student-name').value.trim(),
+                    virtual_account_number: document.getElementById('filter-student-va').value
+                    .trim(),
                 };
-                loadStudents(filters);
+                loadVirtualAccounts(filters);
             });
 
-            // Reset Filters
             document.getElementById('reset-button').addEventListener('click', function() {
                 document.getElementById('filter-students-form').reset();
-                loadStudents();
+                loadVirtualAccounts(); // Reload without filters
             });
+
 
             // Initial Load
             loadPaymentPeriodDetails();
