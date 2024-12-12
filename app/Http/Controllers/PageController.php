@@ -12,7 +12,7 @@ use App\Models\Transaction;
 
 class PageController extends Controller
 {
-    public function loginPage()
+    public function showloginPage()
     {
         return view('pages.login'); // You can change this to the actual login page view name.
     }
