@@ -30,11 +30,12 @@
                             style="border-collapse: collapse; border-spacing: 0; width: 100%;">
                             <thead>
                                 <tr>
-                                    <th>Transaction ID</th>
+                                    <th>ID</th>
                                     <th>Virtual Account Number</th>
                                     <th>Transaction Date</th>
                                     <th>Total</th>
                                     <th>Student</th>
+                                    <th id="institutionHeader">Institution</th>
                                 </tr>
                             </thead>
                             <tbody id="transactions-table-body">
@@ -61,6 +62,7 @@
                             <thead>
                                 <tr>
                                     <th>Virtual Account Number</th>
+                                    <th id="institutionHeader">Institution</th>
                                     <th>Student Name</th>
                                     <th>Amount</th>
                                     <th>Status</th>
@@ -95,6 +97,35 @@
                 }
             }
 
+            async function fetchAllTransactions() {
+                try {
+                    const response = await fetch(
+                        `http://127.0.0.1:8000/api/transactions`
+                    );
+                    const transactions = await response.json();
+
+                    return transactions.data || [];
+                } catch (error) {
+                    console.error('Error fetching transactions:', error);
+                    return [];
+                }
+            }
+
+            async function fetchAllVirtualAccounts() {
+                try {
+                    const response = await fetch(
+                        `http://127.0.0.1:8000/api/virtualAccounts`
+                    );
+                    const virtualAccounts = await response.json();
+                    console.log("fetching all virtual accounts");
+                    console.log(virtualAccounts);
+                    return virtualAccounts.data || [];
+                } catch (error) {
+                    console.error('Error fetching virtual accounts:', error);
+                    return [];
+                }
+            }
+
             async function countActiveVirtualAccounts() {
                 try {
                     const institutionId = localStorage.getItem('institution_id');
@@ -111,6 +142,52 @@
                     console.log(
                         `Active Virtual Accounts for Institution ID ${institutionId}: ${activeVaCount}`);
                     return activeVaCount || 0;
+                } catch (error) {
+                    console.error('Error fetching virtual accounts:', error);
+                    return 0;
+                }
+            }
+
+            async function countInstitution() {
+                try {
+                    const response = await fetch(
+                        `http://127.0.0.1:8000/api/institutions`);
+                    const institutions = await response.json();
+
+                    const institutionCount = institutions.length;
+                    console.log(`Total Institutions: ${institutionCount}`);
+                    return institutionCount || 0;
+                } catch (error) {
+                    console.error('Error fetching institutions:', error);
+                    return 0;
+                }
+            }
+
+            async function countTransaction() {
+                try {
+                    const response = await fetch(
+                        `http://127.0.0.1:8000/api/transactions`);
+                    const transactions = await response.json();
+
+                    const transactionCount = transactions.data.length;
+                    console.log(`Total Transactions: ${transactionCount}`);
+                    return transactionCount || 0;
+                } catch (error) {
+                    console.error('Error fetching transactions:', error);
+                    return 0;
+                }
+            }
+
+
+            async function countVirtualAccounts() {
+                try {
+                    const response = await fetch(
+                        `http://127.0.0.1:8000/api/virtualAccounts`);
+                    const virtualAccounts = await response.json();
+
+                    const virtualAccountCount = virtualAccounts.data.length;
+                    console.log(`Total Virtual Accounts: ${virtualAccountCount}`);
+                    return virtualAccountCount || 0;
                 } catch (error) {
                     console.error('Error fetching virtual accounts:', error);
                     return 0;
@@ -169,6 +246,9 @@
 
                 const activeVa = await countActiveVirtualAccounts();
                 const balance = await fetchBalance(institutionId);
+                const totalInstitution = await countInstitution();
+                const totalVirtualAccounts = await countVirtualAccounts();
+                const totalTransaction = await countTransaction();
 
                 let paymentPeriod = await fetchPaymentPeriod(institutionId);
                 if (paymentPeriod === null) {
@@ -181,13 +261,21 @@
 
                 const virtualAccounts = await fetchVirtualAccounts(institutionId, paymentPeriod.id);
                 const transactions = await fetchTransactions(institutionId, paymentPeriod.id);
-
+                const allTransactions = await fetchAllTransactions();
+                const allVirtualAccounts = await fetchAllVirtualAccounts();
+                console.log("initializing...");
+                console.log(allVirtualAccounts);
                 return {
                     activeVa,
                     paymentPeriod,
                     balance,
                     virtualAccounts,
-                    transactions
+                    transactions,
+                    totalInstitution,
+                    totalVirtualAccounts,
+                    totalTransaction,
+                    allTransactions,
+                    allVirtualAccounts
                 };
             }
 
@@ -242,8 +330,59 @@
                 </div>
             `;
 
-            async function renderCardSection(activeVa, paymentPeriod, balance, virtualAccounts) {
+            const bankAdminContent = `
+                <!-- Total Tagihan -->
+                <div class="col-xl-3 col-md-6">
+                    <div class="card h-60">
+                        <div class="card-body p-4" id="card-1">
+                            <div class="d-flex justify-content-between">
+                                <h3 class="mb-3">Institutions</h3>
+                                <i class="fa fa-file-invoice" style="font-size: 30px; color: #17a2b8;"></i>
+                            </div>
+                            <h5 class="text-muted font-size-12">Count of institutions</h5>
+                            <h3 class="mb-3" id="count-institutions">Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Total SKS -->
+                <div class="col-xl-5 col-md-6">
+                    <div class="card h-70">
+                        <div class="card-body p-4" id="card-2">
+                            <div class="d-flex justify-content-between">
+                                <h3 class="mb-3">Virtual Account Created</h3>
+                                <i class="fa fa-book" style="font-size: 30px; color: #007bff;"></i>
+                            </div>
+                            <h5 class="text-muted font-size-12">Total Virtual Account Created</h5>
+                            <h3 class="mb-3" id="va-created">Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tanggal Pembayaran -->
+                <div class="col-xl-4 col-md-6">
+                    <div class="card h-70">
+                        <div class="card-body p-4" id="card-3">
+                            <div class="d-flex justify-content-between">
+                                <h3 class="mb-3">Transactions</h3>
+                                <i class="fa fa-calendar" style="font-size: 30px; color: #ffc107;"></i>
+                            </div>
+                            <h5 class="text-muted font-size-12">Total Count of Transactions</h5>
+                            <h3 class="mb-3" id="count-transactions">Loading...</h3>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            async function renderCardSection(
+                activeVa = null, paymentPeriod = null, balance = null, virtualAccounts = null,
+                totalInstitutions = null, totalTransactions = null, totalVaCreated = null, allVirtualAccounts = null
+            ) {
+                console.log("rendering card section");
+                console.log(allVirtualAccounts)
                 if (role === 'institution_admin') {
+                    const institutionHeader = document.getElementById('institutionHeader');
+                    institutionHeader.style.display = 'hidden';
                     cardSection.innerHTML = institutionAdminContent;
 
                     const activeVaElement = document.getElementById('active-va');
@@ -281,17 +420,69 @@
                         `;
                         tableBody.appendChild(row);
                     });
+                } else {
+                    cardSection.innerHTML = bankAdminContent;
+                    const institutionHeader = document.getElementById('institutionHeader');
+                    institutionHeader.style.display = 'show';
+                    const countInstitutionsElement = document.getElementById('count-institutions');
+                    if (countInstitutionsElement) {
+                        countInstitutionsElement.textContent = totalInstitutions;
+                    }
+
+                    const vaCreatedElement = document.getElementById('va-created');
+                    if (vaCreatedElement) {
+                        vaCreatedElement.textContent = totalVaCreated;
+                    }
+
+                    const countTransactionsElement = document.getElementById('count-transactions');
+                    if (countTransactionsElement) {
+                        countTransactionsElement.textContent = totalTransactions;
+                    }
+
+                    tableBody.innerHTML = '';
+                    allVirtualAccounts.forEach(va => {
+                        const row = document.createElement('tr');
+                        // Safely access nested data with optional chaining
+                        const virtualAccountNumber = va.virtual_account_number ||
+                            'N/A';
+                        const studentName = va.invoice?.student?.name || 'N/A';
+                        const institutionName = va.invoice?.payment_period
+                            ?.institution?.name || 'N/A';
+                        const formattedTotalAmount = new Intl.NumberFormat('id-ID').format(va.total_amount);
+                        const status = va.status || 'Unknown';
+
+                        row.innerHTML = `
+        <td>${virtualAccountNumber}</td>
+        <td>${studentName}</td>
+        <td>${institutionName}</td>
+        <td>Rp. ${formattedTotalAmount}</td>
+        <td>
+            <span class="badge" style="background-color: ${
+                status === 'Paid' ? '#28a745' :
+                status === 'Expired' ? '#dc3545' :
+                status === 'Unpaid' ? '#ffc107' : '#6c757d'
+            }; color: white;">
+                ${status}
+            </span>
+        </td>
+    `;
+
+                        tableBody.appendChild(row);
+                    });
                 }
             }
 
-            async function renderTransactionTable(transactions) {
-                // const transactions = await fetchTransactions(institutionId, paymentPeriodId);
-                const tableBody = document.getElementById('transactions-table-body');
-                if (transactions) {
-                    tableBody.innerHTML = '';
-                    transactions.forEach(transaction => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
+            async function renderTransactionTable(transactions = null, allTransactions = null) {
+                console.log(allTransactions);
+                if (role === 'institution_admin') {
+                    const institutionHeader = document.getElementById('institutionHeader');
+                    institutionHeader.style.display = 'hidden';
+                    const tableBody = document.getElementById('transactions-table-body');
+                    if (transactions) {
+                        transactionsTableBody.innerHTML = '';
+                        transactions.forEach(transaction => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
                     <td>${transaction.id}</td>
                     <td>${transaction.virtual_account.virtual_account_number}</td>
                     <td>${transaction.transaction_date}</td>
@@ -299,12 +490,41 @@
                     <td>
                         ${transaction.virtual_account.invoice.student.name ?? 'N/A'}
                     </td>
-                `;
-                        tableBody.appendChild(row);
-                    });
+                    `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        transactionsTableBody.innerHTML =
+                            '<tr><td colspan="5" class="text-center">No data available</td></tr>';
+                    }
                 } else {
-                    tableBody.innerHTML = '<tr><td colspan="5" class="text-center">No data available</td></tr>';
+                    const tableBody = document.getElementById('transactions-table-body');
+                    const institutionHeader = document.getElementById('institutionHeader');
+                    institutionHeader.style.display = 'show';
+                    if (allTransactions) {
+                        transactionsTableBody.innerHTML = '';
+                        allTransactions.forEach(transaction => {
+                            const row = document.createElement('tr');
+                            row.innerHTML = `
+                    <td>${transaction.id}</td>
+                    <td>${transaction.virtual_account.virtual_account_number}</td>
+                    <td>${transaction.transaction_date}</td>
+                    <td>Rp. ${new Intl.NumberFormat('id-ID').format(transaction.total)}</td>
+                    <td>
+                        ${transaction.virtual_account.invoice.student.name ?? 'N/A'}
+                    </td>
+                    <td>
+                        ${transaction.virtual_account.invoice.payment_period.institution.name ?? 'N/A'}
+                    </td>
+                    `;
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        transactionsTableBody.innerHTML =
+                            '<tr><td colspan="5" class="text-center">No data available</td></tr>';
+                    }
                 }
+
             }
 
             // Add search functionality for transactions
@@ -341,16 +561,21 @@
                 });
             });
 
-            loadDashboard().then(({
-                activeVa,
-                paymentPeriod,
-                balance,
-                virtualAccounts,
-                institution,
-                transactions
-            }) => {
-                renderCardSection(activeVa, paymentPeriod, balance, virtualAccounts);
-                renderTransactionTable(transactions);
+            loadDashboard().then(dashboardData => {
+                renderCardSection(
+                    dashboardData.activeVa,
+                    dashboardData.paymentPeriod,
+                    dashboardData.balance,
+                    dashboardData.virtualAccounts,
+                    dashboardData.totalInstitution,
+                    dashboardData.totalVirtualAccounts,
+                    dashboardData.totalTransaction,
+                    dashboardData.allVirtualAccounts
+                );
+
+                renderTransactionTable(dashboardData.transactions, dashboardData.allTransactions);
+            }).catch(error => {
+                console.error('Error loading dashboard:', error);
             });
         });
     </script>

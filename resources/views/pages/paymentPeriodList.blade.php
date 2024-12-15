@@ -107,7 +107,7 @@
 @section('scripts')
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const apiUrl = '/api/paymentPeriod';
+            const apiUrl = '/api/paymentPeriods';
 
             // Fetch and display payment periods
             function loadPaymentPeriods() {

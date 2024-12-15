@@ -27,10 +27,13 @@ class VirtualAccountController extends Controller
                 $query->select('id', 'student_id', 'payment_period_id', 'total_amount');
             },
             'invoice.student' => function ($query) {
-                $query->select('id', 'student_id', 'name');
+                $query->select('id', 'name'); // Removed redundant student_id
             },
             'invoice.paymentPeriod' => function ($query) {
                 $query->select('id', 'institution_id', 'month', 'year', 'semester');
+            },
+            'invoice.paymentPeriod.institution' => function ($query) {
+                $query->select('id', 'name');
             },
             'invoice.invoiceItems.itemType' => function ($query) {
                 $query->select('id', 'name', 'description');
@@ -53,11 +56,21 @@ class VirtualAccountController extends Controller
             // Append status to the virtual account data
             $virtualAccount->status = $status;
 
-            return $virtualAccount;
+            // Return the virtual account with all the relationships and status
+            return $virtualAccount->load([
+                'invoice.student',
+                'invoice.paymentPeriod',
+                'invoice.paymentPeriod.institution',
+                'invoice.invoiceItems.itemType'
+            ]);
         });
 
-        return response()->json($invoices);
+        // Return the response with virtual accounts and all related data
+        return response()->json([
+            'data' => $invoices
+        ]);
     }
+
 
     // Helper function to generate unique virtual account numbers
     public function generateVirtualAccountNumber(string $studentId, string $paymentPeriod)
