@@ -23,6 +23,7 @@
         <div class="mt-3">
             <button type="button" id="filter-button" class="btn btn-primary">Filter</button>
             <button type="button" id="reset-button" class="btn btn-secondary">Reset</button>
+            <button type="button" id="item-button" class="btn btn-success">Add Item Types</button>
         </div>
     </form>
 
@@ -46,7 +47,7 @@
         </table>
 
 
-        <a href="{{ url('/virtualAccountCreate/' . $id) }}" class="btn btn-success">
+        <a href="{{ url("/virtualAccountCreate/$id") }}" class="btn btn-success">
             Create Virtual Accounts
         </a>
 
@@ -58,7 +59,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const apiUrl = '/api/students'; // API endpoint for fetching students
-            const createVirtualAccountUrl = '/api/virtualAccount'; // API endpoint for creating virtual accounts
+            const createVirtualAccountUrl = '/api/virtualAccounts'; // API endpoint for creating virtual accounts
             const paymentPeriodId = {{ $id }}; // Pass paymentPeriodId dynamically from controller
             const institutionNameElement = document.getElementById('institution-name');
             const paymentPeriodDetailsElement = document.getElementById('payment-period-details');
@@ -70,8 +71,8 @@
                     "January", "February", "March", "April", "May", "June",
                     "July", "August", "September", "October", "November", "December"
                 ];
-
-                fetch(`/api/paymentPeriod/${paymentPeriodId}`)
+                const institutionId = localStorage.getItem('institution_id');
+                fetch(`/api/paymentPeriods/${paymentPeriodId}`)
                     .then(response => response.json())
                     .then(data => {
                         const monthName = monthNames[parseInt(data.month, 10) -
@@ -81,6 +82,10 @@
                             `${data.year} - ${monthName} (${data.semester})`;
                     })
                     .catch(error => console.error('Error loading payment period details:', error));
+
+                document.getElementById('item-button').addEventListener('click', function() {
+                    window.location.href = `/itemTypes/${institutionId}`;
+                });
             }
             // Utility function to format numbers into Rupiah
             function formatRupiah(amount) {
@@ -179,7 +184,7 @@
                 const filters = {
                     name: document.getElementById('filter-student-name').value.trim(),
                     virtual_account_number: document.getElementById('filter-student-va').value
-                    .trim(),
+                        .trim(),
                 };
                 loadVirtualAccounts(filters);
             });
@@ -188,7 +193,6 @@
                 document.getElementById('filter-students-form').reset();
                 loadVirtualAccounts(); // Reload without filters
             });
-
 
             // Initial Load
             loadPaymentPeriodDetails();

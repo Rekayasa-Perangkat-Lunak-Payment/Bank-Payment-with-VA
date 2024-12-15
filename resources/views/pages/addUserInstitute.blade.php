@@ -130,18 +130,13 @@
                     })
                     .then(response => {
                         console.log('Response Status:', response.status); // Log response status
-                        if (!response.ok) throw response;
-                        return response.json();
-                    })
-
-                    .then(data => {
-                        if (data.message) {
-                            alert('Institution Admin created successfully');
-                            window.location.href =
-                                '/userInstituteList'; // Redirect to the institution admin list page
-                        } else {
-                            alert('Failed to create Institution Admin');
+                        if (!response.ok) {
+                            throw new Error('Failed to submit form');
+                        }else{
+                            alert("User added succesfully.");
+                            window.location.href = '/userInstituteList';
                         }
+                        return response.json();
                     })
                     .catch(error => {
                         console.error('Error:', error);

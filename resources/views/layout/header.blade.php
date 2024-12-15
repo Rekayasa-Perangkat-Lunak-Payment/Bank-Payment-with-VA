@@ -5,10 +5,10 @@
             <div class="navbar-brand-box">
                 <a href="/" class="logo logo-light">
                     <span class="logo-sm">
-                        <img src="assets/images/logo-putih.png" alt="logo-sm-light" height="190">
+                        <img src="{{ asset('assets/images/logo-putih.png') }}" alt="logo-sm-light" height="190">
                     </span>
                     <span class="logo-lg">
-                        <img src="assets/images/logo-putih.png" alt="logo-light" height="190">
+                        <img src="{{ asset('assets/images/logo-putih.png') }}" alt="logo-light" height="190">
                     </span>
                 </a>
             </div>
@@ -31,9 +31,9 @@
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" id="user-avatar" src="assets/images/users/avatar-7.jpg"
+                    <img class="rounded-circle header-profile-user" id="user-avatar" src="{{ asset('assets/images/users/avatar-7.jpg') }}"
                         alt="Header Avatar">
-                    <span class="d-none d-xl-inline-block ms-1" id="user-name">Elseva Jelita</span>
+                    <span class="d-none d-xl-inline-block ms-1" id="user-name">User</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">

@@ -112,7 +112,10 @@ class PaymentPeriodController extends Controller
 
     public function getPaymentPeriodsByInstitution($institutionId)
     {
-        $paymentPeriods = PaymentPeriod::where('institution_id', $institutionId)
+        $paymentPeriods = PaymentPeriod::with('institution:id,name,status,educational_level')
+            ->whereHas('institution', function ($query) use ($institutionId) {
+                $query->where('id', $institutionId);
+            })
             ->orderBy('year', 'desc')
             ->orderBy('month', 'desc')
             ->get();

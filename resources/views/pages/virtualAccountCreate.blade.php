@@ -63,7 +63,7 @@
 @section('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const paymentPeriodId = {{ $paymentPeriodId }};
+            const paymentPeriodId = {{ $id }};
             const institutionNameElement = document.getElementById('institution-name');
             const paymentPeriodDetailsElement = document.getElementById('payment-period-details');
             const form = document.getElementById('bulk-create-form');
@@ -73,74 +73,69 @@
             const selectAllCheckbox = document.getElementById('select-all-checkbox');
             const creditCostInput = document.getElementById('credit-cost');
             const fixedCostInput = document.getElementById('fixed-cost');
-            const institutionId = {{ $institutionId }}; // Assuming the institution ID is passed to the page
-            const apiUrl = `/api/students/institution/${institutionId}`;
+            let institutionId;
 
             // Fetch institution and payment period details
-            function loadInstitutionAndPaymentPeriod() {
-                fetch(`/api/paymentPeriod/${paymentPeriodId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.institution) {
-                            institutionNameElement.textContent = data.institution.name;
-                            paymentPeriodDetailsElement.textContent =
-                                `${data.month} - ${data.year} - ${data.semester}`;
-                        } else {
-                            institutionNameElement.textContent = 'Institution information not available';
-                            paymentPeriodDetailsElement.textContent =
-                                'Payment period information not available';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching institution and payment period:', error);
-                        institutionNameElement.textContent = 'Failed to load institution data';
-                        paymentPeriodDetailsElement.textContent = 'Failed to load payment period data';
-                    });
+            async function loadInstitutionAndPaymentPeriod() {
+                try {
+                    const response = await fetch(`/api/paymentPeriods/${paymentPeriodId}`);
+                    const data = await response.json();
+                    console.log(data); // Check the structure of the response
+
+                    if (data.institution) {
+                        institutionNameElement.textContent = data.institution.name;
+                        paymentPeriodDetailsElement.textContent =
+                            `${data.month} - ${data.year} - ${data.semester}`;
+                        institutionId = data.institution.id; // Store the institution_id here
+                    } else {
+                        institutionNameElement.textContent = 'Institution information not available';
+                        paymentPeriodDetailsElement.textContent =
+                            'Payment period information not available';
+                    }
+                } catch (error) {
+                    console.error('Error fetching institution and payment period:', error);
+                    institutionNameElement.textContent = 'Failed to load institution data';
+                    paymentPeriodDetailsElement.textContent = 'Failed to load payment period data';
+                }
             }
-
             // Fetch available years and majors for the filter options
-            function loadFilterOptions() {
-                fetch(`/api/available-filter-options/${paymentPeriodId}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        const years = data.years || [];
-                        const majors = data.majors || [];
+            async function loadFilterOptions() {
+                try {
+                    const response = await fetch(`/api/available-filter-options/${paymentPeriodId}`);
+                    const data = await response.json();
+                    const years = data.years || [];
+                    const majors = data.majors || [];
 
-                        // Populate Year dropdown
-                        years.forEach(year => {
-                            const option = document.createElement('option');
-                            option.value = year;
-                            option.textContent = year;
-                            filterYear.appendChild(option);
-                        });
+                    // Populate Year dropdown
+                    years.forEach(year => {
+                        const option = document.createElement('option');
+                        option.value = year;
+                        option.textContent = year;
+                        filterYear.appendChild(option);
+                    });
 
-                        // Populate Major dropdown
-                        majors.forEach(major => {
-                            const option = document.createElement('option');
-                            option.value = major;
-                            option.textContent = major;
-                            filterMajor.appendChild(option);
-                        });
-                    })
-                    .catch(error => console.error('Error fetching filter options:', error));
+                    // Populate Major dropdown
+                    majors.forEach(major => {
+                        const option = document.createElement('option');
+                        option.value = major;
+                        option.textContent = major;
+                        filterMajor.appendChild(option);
+                    });
+                } catch (error) {
+                    console.error('Error fetching filter options:', error);
+                }
             }
 
             // Fetch ItemTypes for the institution
-            function loadItemTypes() {
-                return fetch(`/api/institution/${institutionId}/itemTypes`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data && Array.isArray(data)) {
-                            return data;
-                        } else {
-                            console.error('ItemTypes not found for institution');
-                            return []; // Return an empty array if no data or invalid data
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching item types:', error);
-                        return []; // Return an empty array in case of error
-                    });
+            async function loadItemTypes() {
+                try {
+                    const response = await fetch(`/api/institution/${institutionId}/itemTypes`);
+                    const data = await response.json();
+                    return Array.isArray(data) ? data : [];
+                } catch (error) {
+                    console.error('Error fetching item types:', error);
+                    return [];
+                }
             }
 
             // Function to add an invoice item for a student
@@ -152,8 +147,8 @@
                             <select name="invoice_item_type[${studentId}][]" class="form-control">
                                 <option value="">Select Item Type</option>
                                 ${itemTypes.map(itemType => `
-                                            <option value="${itemType.id}">${itemType.name}</option>
-                                        `).join('')}
+                                                <option value="${itemType.id}">${itemType.name}</option>
+                                            `).join('')}
                             </select>
                             <input type="text" name="invoice_item_description[${studentId}][]" placeholder="Description" class="form-control">
                             <input type="number" name="invoice_item_amount[${studentId}][]" placeholder="Amount" class="form-control">
@@ -173,9 +168,8 @@
             async function fetchStudents() {
                 const selectedYear = filterYear.value;
                 const selectedMajor = filterMajor.value;
-
                 let filterParams = {};
-
+                const apiUrl = `/api/students/institution/${institutionId}`;
                 if (selectedYear) {
                     filterParams.year = selectedYear;
                 }
@@ -192,7 +186,7 @@
 
                     if (students.length === 0) {
                         tableBody.innerHTML =
-                            `<tr><td colspan="5" class="text-center">No students found for this filter.</td></tr>`;
+                            `<tr><td colspan="4" class="text-center">No students found for this filter.</td></tr>`;
                         return;
                     }
 
@@ -215,15 +209,14 @@
                 } catch (error) {
                     console.error('Error fetching students:', error);
                     tableBody.innerHTML =
-                        `<tr><td colspan="5" class="text-center text-danger">Failed to load students. Please try again later.</td></tr>`;
+                        `<tr><td colspan="4" class="text-center text-danger">Failed to load students. Please try again later.</td></tr>`;
                 }
             }
 
             // Handle Select All checkbox toggle
             selectAllCheckbox.addEventListener('change', function() {
                 const isChecked = selectAllCheckbox.checked;
-                const studentCheckboxes = document.querySelectorAll('.student-checkbox');
-                studentCheckboxes.forEach(checkbox => {
+                document.querySelectorAll('.student-checkbox').forEach(checkbox => {
                     checkbox.checked = isChecked;
                 });
             });
@@ -235,7 +228,15 @@
             // Initial data load
             loadInstitutionAndPaymentPeriod();
             loadFilterOptions();
-            fetchStudents();
+            async function fetchData() {
+                await loadInstitutionAndPaymentPeriod(); // Ensure this is finished first
+                console.log('Institution ID:', institutionId);
+                
+                fetchStudents(); // Now fetch students after institutionId is available
+                loadItemTypes();
+            }
+
+            fetchData(); // Start the fetch process
 
             // Handle form submission for bulk creation
             form.addEventListener('submit', function(event) {
@@ -248,23 +249,17 @@
                     select => {
                         const studentId = select.name.match(/\d+/)[0];
                         const descriptionElement = document.querySelector(
-                            `[name="invoice_item_description[${studentId}][]"]`
-                        );
+                            `[name="invoice_item_description[${studentId}][]"]`);
                         const amountElement = document.querySelector(
-                            `[name="invoice_item_amount[${studentId}][]"]`
-                        );
+                            `[name="invoice_item_amount[${studentId}][]"]`);
 
                         return {
                             student_id: studentId,
                             item_type_id: select.value,
-                            description: descriptionElement ? descriptionElement.value :
-                            '', // Check if description element exists
-                            amount: amountElement ? amountElement.value :
-                                '' // Check if amount element exists
+                            description: descriptionElement ? descriptionElement.value : '',
+                            amount: amountElement ? amountElement.value : ''
                         };
-                    }
-                );
-
+                    });
 
                 const creditCost = creditCostInput.value;
                 const fixedCost = fixedCostInput.value;
@@ -282,12 +277,7 @@
                             fixed_cost: fixedCost
                         }),
                     })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Failed to create virtual accounts');
-                        }
-                        return response.json();
-                    })
+                    .then(response => response.json())
                     .then(data => {
                         alert(data.message);
                         window.location.href = `/paymentPeriod/${paymentPeriodId}`;

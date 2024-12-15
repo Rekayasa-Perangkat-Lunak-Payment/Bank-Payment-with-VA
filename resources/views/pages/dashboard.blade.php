@@ -201,6 +201,11 @@
                     const paymentPeriods = await response.json();
 
                     const latestPaymentPeriod = paymentPeriods[0];
+                    if (!latestPaymentPeriod) {
+                        console.error(
+                            `No Payment Period found for Institution ID ${institutionId}`);
+                        return null;
+                    }
                     console.log(
                         `Latest Payment Period for Institution ID ${institutionId}: ${latestPaymentPeriod}`);
                     return latestPaymentPeriod;
@@ -253,6 +258,7 @@
                 let paymentPeriod = await fetchPaymentPeriod(institutionId);
                 if (paymentPeriod === null) {
                     paymentPeriod = {
+                        'id': 0,
                         'year': 'N/A',
                         'month': 'N/A',
                         'semester': 'N/A'

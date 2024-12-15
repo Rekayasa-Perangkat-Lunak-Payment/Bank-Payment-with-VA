@@ -50,6 +50,7 @@
                         <span>Student List</span>
                     </a>
                 </li>
+
             </ul>
             <!-- end ul -->
         </div>
@@ -65,6 +66,9 @@
     if (userRole === 'bank_admin') {
         document.getElementById('userInstituteList').style.display = 'block';
         document.getElementById('instituteList').style.display = 'block';
+        document.getElementById('transactions').style.display = 'block';
+        document.getElementById('paymentPeriodList').style.display = 'block';
+        document.getElementById('studentList').style.display = 'block';
     } else if (userRole === 'institution_admin') {
         document.getElementById('transactions').style.display = 'block';
         document.getElementById('paymentPeriodList').style.display = 'block';

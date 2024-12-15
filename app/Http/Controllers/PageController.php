@@ -127,8 +127,12 @@ class PageController extends Controller
         return view('pages.transaction', compact('id'));
     }
 
-    public function bulkCreateVirtualAccounts($paymentPeriodId, $institutionId)
+    public function bulkCreateVirtualAccounts($id)
     {
-        return view('pages.virtualAccountCreate', ['paymentPeriodId' => $paymentPeriodId, 'institutionId' => $institutionId]);
+        return view('pages.virtualAccountCreate', compact('id'));
+    }
+
+    public function itemTypePage($id){
+        return view('pages.itemType', compact('id'));
     }
 }

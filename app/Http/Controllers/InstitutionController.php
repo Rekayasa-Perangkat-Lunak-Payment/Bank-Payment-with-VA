@@ -92,24 +92,21 @@ class InstitutionController extends Controller
         // Validate incoming data (all fields)
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
+            'npsn' => 'required|string|max:255',
             'status' => 'required|string|max:255',
             'educational_level' => 'required|string|max:255',
             'address' => 'required|string',
             'phone' => 'required|string|max:15',
             'email' => 'required|email|max:255',
             'account_number' => 'nullable|string|max:20',
-            'balance' => 'required|numeric',
         ]);
-
-        // If validation fails, Laravel will automatically return a 422 response with the errors.
-        // You can handle that with a try-catch block or simply rely on Laravel's automatic behavior.
 
         try {
             // Update the institution with the validated data
             $institution->update($validatedData);
 
             // Return the updated institution as a JSON response
-            return response()->json($institution, 200);
+            return response()->json($institution);
         } catch (\Exception $e) {
             // If any error occurs during update, return a 500 error
             return response()->json(['error' => 'Failed to update institution', 'message' => $e->getMessage()], 500);

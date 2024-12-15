@@ -66,10 +66,6 @@
                 <div class="modal-body">
                     <form id="add-payment-period-form">
                         <div class="mb-3">
-                            <label for="institution-select" class="form-label">Institution</label>
-                            <select id="institution-select" class="form-select" required></select>
-                        </div>
-                        <div class="mb-3">
                             <label for="year" class="form-label">Year</label>
                             <input type="number" id="year" class="form-control" required>
                         </div>
@@ -78,7 +74,16 @@
                             <select id="month" class="form-select" required>
                                 <option value="01">January</option>
                                 <option value="02">February</option>
-                                <!-- Add other months here -->
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
                             </select>
                         </div>
                         <div class="mb-3">
@@ -99,6 +104,9 @@
                         <button type="submit" class="btn btn-primary">Save Payment Period</button>
                     </form>
                 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
@@ -106,8 +114,49 @@
 
 @section('scripts')
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const apiUrl = '/api/paymentPeriods';
+        document.addEventListener("DOMContentLoaded", function() {
+            const addPaymentPeriodForm = document.getElementById('add-payment-period-form');
+
+            addPaymentPeriodForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+
+                const year = document.getElementById('year').value;
+                const month = document.getElementById('month').value;
+                const semester = document.getElementById('semester').value;
+                const fixedCost = document.getElementById('fixed-cost').value;
+                const creditCost = document.getElementById('credit-cost').value;
+
+                fetch('http://127.0.0.1:8000/api/paymentPeriods', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            institution_id: localStorage.getItem('institution_id'),
+                            year: year,
+                            month: parseInt(month, 10),
+                            semester: semester,
+                            fixed_cost: fixedCost,
+                            credit_cost: creditCost,
+                        }),
+                    })
+                    .then(response => {
+                        console.log('Response Status:', response.status); // Log response status
+                        if (!response.ok) {
+                            throw new Error('Failed to submit form');
+                        }else{
+                            alert("Payment period added succesfully.");
+                            window.location.href = '/paymentPeriodList';
+                        }
+                        return response.json();
+                    })
+                    .catch(error => console.error('Error creating payment period:', error));
+            });
+
+
+            const institution_id = localStorage.getItem('institution_id');
+            const apiUrl = '/api/paymentPeriods/institution/' + institution_id;
 
             // Fetch and display payment periods
             function loadPaymentPeriods() {
@@ -118,7 +167,8 @@
                     .then(response => response.json())
                     .then(data => {
                         if (data.length === 0) {
-                            tbody.innerHTML = '<tr><td colspan="7" class="text-center">No payment periods found</td></tr>';
+                            tbody.innerHTML =
+                                '<tr><td colspan="7" class="text-center">No payment periods found</td></tr>';
                             return;
                         }
 
@@ -140,7 +190,8 @@
                     })
                     .catch(error => {
                         console.error('Error fetching payment periods:', error);
-                        tbody.innerHTML = '<tr><td colspan="7" class="text-center">Failed to load data</td></tr>';
+                        tbody.innerHTML =
+                            '<tr><td colspan="7" class="text-center">Failed to load data</td></tr>';
                     });
             }
 

@@ -9,7 +9,7 @@
                         <h5 class="mb-0">User Options</h5>
                     </div>
                     <div class="card-body text-center">
-                        <img src="{{ asset('default-avatar.png') }}" alt="User Avatar" class="img-fluid rounded-circle mb-3"
+                        <img src="{{ asset('assets\images\users\avatar-2.jpg') }}" alt="User Avatar" class="img-fluid rounded-circle mb-3"
                             width="100">
                         <h5>{{ $userInstitute['name'] }}</h5>
                         <p class="text-muted">{{ $userInstitute['title'] ?? 'N/A' }}</p>
@@ -206,8 +206,6 @@
                     console.error('Error:', error);
                     alert(`An error occurred: ${error.message}`);
                 });
-
-
         }
 
 
@@ -223,7 +221,7 @@
                     .then(response => {
                         if (response.ok) {
                             alert("User has been disabled. With ID: " + userId);
-                            location.reload();
+                            window.location.href = '/userInstituteList';
                         } else {
                             alert("Failed to disable user. Please try again.");
                         }

@@ -26,10 +26,12 @@ Route::get('/student/{id}', [PageController::class, 'studentPage']);
 Route::get('/paymentPeriodList', [PageController::class, 'paymentPeriodListPage'])->name('paymentPeriodList');
 Route::get('/paymentPeriod/{id}', [PageController::class, 'paymentPeriodPage'])->name('paymentPeriod');
 
-Route::get('/virtualAccountCreate/{paymentPeriodId}/{institutionId}', [PageController::class, 'bulkCreateVirtualAccounts']);
+Route::get('/virtualAccountCreate/{id}', [PageController::class, 'bulkCreateVirtualAccounts']);
 
 Route::get('/invoiceList', [PageController::class, 'invoiceListPage'])->name('invoiceList');
 Route::get('/invoice/{id}', [PageController::class, 'invoicePage'])->name('invoice');
 
 Route::get('/transactions', [PageController::class, 'transactionsPage'])->name('transactions');
 Route::get('/transactions/{id}', [PageController::class, 'transactionPage'])->name('transaction');
+
+Route::get('/itemTypes/{id}', [PageController::class, 'itemTypePage'])->name('itemType');

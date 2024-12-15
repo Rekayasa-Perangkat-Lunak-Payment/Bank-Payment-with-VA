@@ -9,6 +9,7 @@
         <div class="col-12">
             <div class="page-title-box d-flex align-items-center justify-content-between">
                 <h4 class="mb-0">Institute List</h4>
+                <button class="btn btn-success" onclick="window.location.href='/addInstitute'">Add Institute</button>
             </div>
         </div>
     </div>
@@ -127,7 +128,6 @@
                     console.error('Error fetching institutes:', error);
                 });
         }
-
 
         function loadProfile(id) {
             window.location.href = `/institute/${id}`;

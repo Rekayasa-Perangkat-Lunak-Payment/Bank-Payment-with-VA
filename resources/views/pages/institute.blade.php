@@ -135,44 +135,63 @@
             const editButton = document.getElementById('edit-button');
             const saveButton = document.getElementById('save-button');
             const formElements = document.querySelectorAll('#institution-form input, #institution-form textarea');
-            
+
             // Enable fields for editing when 'Edit' button is clicked
-            editButton.addEventListener('click', function () {
+            editButton.addEventListener('click', function() {
                 formElements.forEach(element => element.removeAttribute('disabled'));
                 editButton.classList.add('d-none');
                 saveButton.classList.remove('d-none');
             });
 
             // Handle saving the edited data
-            saveButton.addEventListener('click', function () {
-                const formData = new FormData(document.getElementById('institution-form'));
-                const data = Object.fromEntries(formData);
+            saveButton.addEventListener('click', function() {
+                // Collect the form data for the institution
+                const formData = {
+                    name: document.getElementById('institution-name-input').value,
+                    npsn: document.getElementById('institution-npsn').value,
+                    status: document.getElementById('institution-status').value,
+                    educational_level: document.getElementById('institution-educational-level').value,
+                    address: document.getElementById('institution-address').value,
+                    phone: document.getElementById('institution-phone').value,
+                    email: document.getElementById('institution-email').value,
+                    account_number: document.getElementById('institution-account-number').value
+                };
 
-                // Add institution name to the updated data
-                data.name = document.getElementById('institution-name-input').value;
+                console.log('Institution Data:', formData); // For debugging
 
+                // Send PUT request to update the institution
                 fetch(`http://localhost:8000/api/institutions/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        //'Authorization': 'Bearer YOUR_API_TOKEN', // If authentication is required
-                    },
-                    body: JSON.stringify(data),
-                })
-                    .then(response => response.json())
-                    .then(updatedData => {
-                        alert('Institution updated successfully!');
-                        loadProfile(id); // Reload the profile with updated data
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                'content') // CSRF Token
+                        },
+                        body: JSON.stringify(formData) // Sending the institution data in JSON format
+                    })
+                    .then(response => {
+                        if (!response.ok) {
+                            // If the response is not successful, throw an error with the response message
+                            return response.text().then(text => {
+                                throw new Error(text);
+                            });
+                        }
+                        return response.json(); // Parse the JSON response if successful
+                    })
+                    .then(data => {
+                        alert("Institution information has been updated.");
+                        location.reload(); // Reload to reflect the updated data
                     })
                     .catch(error => {
-                        console.error('Error saving institution:', error);
-                        alert('Failed to save institution.');
+                        console.error('Error:', error);
+                        alert(
+                        `An error occurred: ${error.message}`); // Show error message if something goes wrong
                     });
             });
 
             // Set up delete button
             const deleteButton = document.getElementById('delete-button');
-            deleteButton.addEventListener('click', function (event) {
+            deleteButton.addEventListener('click', function(event) {
                 event.preventDefault();
                 deleteInstitution(id);
             });
@@ -182,12 +201,12 @@
         function deleteInstitution(id) {
             if (confirm('Are you sure you want to delete this institution?')) {
                 fetch(`http://localhost:8000/api/institutions/${id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer YOUR_API_TOKEN', // If authentication is required
-                    },
-                })
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer YOUR_API_TOKEN', // If authentication is required
+                        },
+                    })
                     .then(response => {
                         if (response.ok) {
                             alert('Institution deleted successfully');
@@ -204,7 +223,7 @@
         }
 
         // Call the function when the page loads
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             loadProfile(institutionId);
         });
     </script>
