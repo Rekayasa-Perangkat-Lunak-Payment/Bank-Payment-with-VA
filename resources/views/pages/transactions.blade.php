@@ -99,7 +99,6 @@
             }
         }
 
-
         // Function to filter the table by date range
         function filterByDate() {
             const startDate = document.getElementById('start-date').value;
@@ -155,8 +154,6 @@
                 console.error('Error fetching transactions:', error);
             }
         }
-
-
 
         // Function to render table based on data
         function renderTable(data) {
