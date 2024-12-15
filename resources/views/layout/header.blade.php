@@ -5,14 +5,10 @@
             <div class="navbar-brand-box">
                 <a href="/" class="logo logo-light">
                     <span class="logo-sm">
-                        {{-- logo closed --}}
                         <img src="assets/images/logo-putih.png" alt="logo-sm-light" height="190">
-                        {{-- <span class="fs-4">IPay</span> --}}
                     </span>
                     <span class="logo-lg">
-                        {{-- logo open --}}
                         <img src="assets/images/logo-putih.png" alt="logo-light" height="190">
-                        {{-- <span class="fw-bolder fs-3 light">Institute Pay</span> --}}
                     </span>
                 </a>
             </div>
@@ -35,9 +31,9 @@
             <div class="dropdown d-inline-block user-dropdown">
                 <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                     data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="rounded-circle header-profile-user" src="assets/images/users/avatar-7.jpg"
+                    <img class="rounded-circle header-profile-user" id="user-avatar" src="assets/images/users/avatar-7.jpg"
                         alt="Header Avatar">
-                    <span class="d-none d-xl-inline-block ms-1">Elseva Jelita</span>
+                    <span class="d-none d-xl-inline-block ms-1" id="user-name">Elseva Jelita</span>
                     <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                 </button>
                 <div class="dropdown-menu dropdown-menu-end">
@@ -49,7 +45,7 @@
                     <a class="dropdown-item" href="#"><i class="ri-lock-unlock-line align-middle me-1"></i> Lock
                         screen</a>
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item text-danger" href="/login"><i
+                    <a class="dropdown-item text-danger" href="#" id="logout-button"><i
                             class="ri-shut-down-line align-middle me-1 text-danger"></i> Logout</a>
                 </div>
             </div>
@@ -57,3 +53,29 @@
         </div>
     </div>
 </header>
+
+<script>
+    // Check if the user is logged in by checking the authToken in localStorage
+    const authToken = localStorage.getItem('authToken');
+    const role = localStorage.getItem('role');
+    const name = localStorage.getItem('name');
+
+    if (role) {
+        // If user is logged in, update the UI with their name and avatar
+        document.getElementById('user-name').textContent = name;
+    } else {
+        // If user is not logged in, you may want to redirect to login or show a guest state
+        window.location.href = '/login';
+    }
+
+    // Logout functionality
+    document.getElementById('logout-button').addEventListener('click', function() {
+        // Remove items from localStorage
+        localStorage.removeItem('authToken');
+        localStorage.removeItem('role');
+        localStorage.removeItem('name');
+
+        // Redirect to login page
+        window.location.href = '/';
+    });
+</script>

@@ -14,7 +14,7 @@ class UserController extends Controller
     public function login(Request $request)
     {
         // Find the user by email
-        $user = User::where('email', $request->email)->first();
+        $user = User::with('bankAdmin', 'institutionAdmin')->where('email', $request->email)->first();
 
         if (!$user) {
             return response()->json([
@@ -22,27 +22,45 @@ class UserController extends Controller
                 'message' => 'User not found',
             ], 404);
         }
-
-        // Check the password using the appropriate method
+        // Check the password using Hash::check
         if (!Hash::check($request->password, $user->password)) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Invalid email or password',
+                'data' => $user,
             ], 401);
+        }
+
+        $role = null;
+        if ($user->bankAdmin) {
+            $role = 'bank_admin';
+        } elseif ($user->institutionAdmin) {
+            $role = 'institution_admin';
+        }
+
+        // If no role is found, return an error
+        if (!$role) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'User does not have a valid role',
+            ], 403);
         }
 
         // Generate a token after successful login
         $token = $user->createToken('authToken')->plainTextToken;
 
-        // Successful login
+        // Successful login with role
         return response()->json([
             'status' => 'success',
             'message' => 'Login successful',
             'data' => [
-                'token' => $token
+                'token' => $token,
+                'role' => $role,
+                'user' => $user
             ]
         ]);
     }
+
 
     /**
      * Handle user logout.
@@ -93,35 +111,6 @@ class UserController extends Controller
             'status' => 'success',
             'message' => 'Profile updated successfully',
             'data' => $user
-        ]);
-    }
-
-    /**
-     * Handle user registration.
-     */
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users',
-            'password' => 'required|min:6|confirmed'
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password), // bcrypt() for hashing
-        ]);
-
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'User registered successfully',
-            'data' => [
-                'user' => $user,
-                'token' => $token
-            ]
         ]);
     }
 }

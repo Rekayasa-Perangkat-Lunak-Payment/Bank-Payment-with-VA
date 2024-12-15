@@ -30,7 +30,7 @@ class VirtualAccountController extends Controller
                 $query->select('id', 'student_id', 'name');
             },
             'invoice.paymentPeriod' => function ($query) {
-                $query->select('id', 'month', 'year', 'semester');
+                $query->select('id', 'institution_id', 'month', 'year', 'semester');
             },
             'invoice.invoiceItems.itemType' => function ($query) {
                 $query->select('id', 'name', 'description');
@@ -348,5 +348,96 @@ class VirtualAccountController extends Controller
         $virtualAccount->delete();
 
         return response()->json(['message' => 'Virtual Account deleted successfully'], Response::HTTP_NO_CONTENT);
+    }
+
+    public function getVirtualAccountsByInstitution($institutionId)
+    {
+        $query = VirtualAccount::with([
+            'invoice' => function ($query) {
+                $query->select('id', 'student_id', 'payment_period_id', 'total_amount');
+            },
+            'invoice.student' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'invoice.paymentPeriod' => function ($query) {
+                $query->select('id', 'month', 'year', 'semester');
+            },
+            'invoice.invoiceItems.itemType' => function ($query) {
+                $query->select('id', 'name', 'description');
+            }
+        ])->whereHas('invoice', function ($query) use ($institutionId) {
+            $query->whereHas('student', function ($query) use ($institutionId) {
+                $query->where('institution_id', $institutionId);
+            });
+        });
+
+        $virtualAccounts = $query->get()->map(function ($virtualAccount) {
+            // Check if the virtual account has a corresponding transaction
+            $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
+
+            // Determine if the virtual account is expired
+            $isExpired = now()->greaterThan($virtualAccount->expired_at);
+
+            // Determine status
+            $status = 'Unpaid';
+            if ($isPaid) {
+                $status = 'Paid';
+            } elseif ($isExpired) {
+                $status = 'Expired';
+            }
+
+            // Append status to the virtual account data
+            $virtualAccount->status = $status;
+
+            return $virtualAccount;
+        });
+
+        return response()->json($virtualAccounts);
+    }
+
+    public function getVirtualAccountsByInstitutionAndPaymentPeriod($institutionId, $paymentPeriodId)
+    {
+        $query = VirtualAccount::with([
+            'invoice' => function ($query) {
+                $query->select('id', 'student_id', 'payment_period_id', 'total_amount');
+            },
+            'invoice.student' => function ($query) {
+                $query->select('id', 'name');
+            },
+            'invoice.paymentPeriod' => function ($query) {
+                $query->select('id', 'month', 'year', 'semester');
+            },
+            'invoice.invoiceItems.itemType' => function ($query) {
+                $query->select('id', 'name', 'description');
+            }
+        ])->whereHas('invoice', function ($query) use ($institutionId, $paymentPeriodId) {
+            $query->whereHas('student', function ($query) use ($institutionId) {
+                $query->where('institution_id', $institutionId);
+            })
+                ->where('payment_period_id', $paymentPeriodId);
+        });
+
+        $virtualAccounts = $query->get()->map(function ($virtualAccount) {
+            // Check if the virtual account has a corresponding transaction
+            $isPaid = Transaction::where('virtual_account_id', $virtualAccount->id)->exists();
+
+            // Determine if the virtual account is expired
+            $isExpired = now()->greaterThan($virtualAccount->expired_at);
+
+            // Determine status
+            $status = 'Unpaid';
+            if ($isPaid) {
+                $status = 'Paid';
+            } elseif ($isExpired) {
+                $status = 'Expired';
+            }
+
+            // Append status to the virtual account data
+            $virtualAccount->status = $status;
+
+            return $virtualAccount;
+        });
+
+        return response()->json($virtualAccounts);
     }
 }

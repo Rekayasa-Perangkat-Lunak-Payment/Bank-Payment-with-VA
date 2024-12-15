@@ -27,17 +27,13 @@ use App\Models\Student;
 |
 */
 
-// Route::middleware('auth.token')->get('/profile', function (Request $request) {
-//     return $request->user();
-// });
 
-// Route::post('/login', [UserController::class, 'login'])->name('login');
-// Route::post('/logout', [UserController::class, 'logout'])->middleware('auth.token');
-// Route::get('/profile', [UserController::class, 'profile'])->middleware('auth.token');
-// Route::post('/update-profile', [UserController::class, 'updateProfile'])->middleware('auth.token');
-// Route::post('/register', [UserController::class, 'register']);
+Route::post('/login', [UserController::class, 'login'])->name('login');
 
 Route::apiResource('transactions', TransactionController::class);
+Route::get('/transactions/institution/{institutionId}', [TransactionController::class, 'getTransactionsByInstitutionId']);
+Route::get('/transactions/institution/{institutionId}/paymentPeriod/{paymentPeriodId}', [TransactionController::class, 'getTransactionsByInstitutionIdAndPaymentPeriodId']);
+
 Route::apiResource('institutions', InstitutionController::class);
 Route::apiResource('students', StudentController::class);
 Route::apiResource('userInstitutions', InstitutionAdminController::class);
@@ -47,16 +43,16 @@ Route::apiResource('invoices', InvoiceController::class);
 Route::apiResource('invoiceItems', InvoiceItemController::class);
 Route::apiResource('virtualAccounts', VirtualAccountController::class);
 Route::apiResource('itemTypes', ItemTypeController::class);
-Route::apiResource('paymentPeriod', PaymentPeriodController::class);
+
+Route::apiResource('paymentPeriods', PaymentPeriodController::class);
+Route::get('/paymentPeriods/institution/{institutionId}', [PaymentPeriodController::class, 'getPaymentPeriodsByInstitution']);
 
 Route::get('/virtualAccountList/{id}', [VirtualAccountController::class, 'getVirtualAccountsByPaymentPeriod']);
-Route::get('/institution/{institutionId}/itemTypes', [ItemTypeController::class, 'getInstitutionItemTypes']); // (/api/institution/${institutionId}/itemTypes)
+Route::get('/virtualAccounts/institution/{institutionId}', [VirtualAccountController::class, 'getVirtualAccountsByInstitution']);
+Route::get('/virtualAccounts/institution/{institutionId}/paymentPeriod/{paymentPeriodId}', [VirtualAccountController::class, 'getVirtualAccountsByInstitutionAndPaymentPeriod']);
+Route::get('/institution/{institutionId}/itemTypes', [ItemTypeController::class, 'getInstitutionItemTypes']);
 Route::post('/bulk-virtual-accounts', [VirtualAccountController::class, 'storeBulkVirtualAccounts']);
 Route::get('/students/institution/{institutionId}', [StudentController::class, 'getStudentsByInstitution']);
 Route::get('/students/paymentPeriod/{paymentPeriodId}', [VirtualAccountController::class, 'getStudentsByPaymentPeriod']);
 Route::get('/available-filter-options/{paymentPeriodId}', [VirtualAccountController::class, 'getAvailableFilterOptions']);
 Route::post('/students/login', [StudentController::class, 'login']);
-// Route::prefix('admin')->group(function () {
-//     Route::apiResource('institution-admins', InstitutionAdminController::class);
-//     Route::apiResource('bank-admins', BankAdminController::class);
-// });

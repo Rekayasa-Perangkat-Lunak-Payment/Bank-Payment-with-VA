@@ -50,34 +50,36 @@ class InstitutionAdminController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'title' => 'required|string|max:255',
             'user.username' => 'required|string|unique:users,username',
-            'user.password' => 'required|string|min:8',
             'user.email' => 'required|email|unique:users,email',
+            'user.password' => 'required|string|min:8',
             'institution_id' => 'required|exists:institutions,id',
+            'name' => 'required|string',
+            'title' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        // Create a new user
+        // Extract user fields from the request
+        $userData = $request->get('user');
+
+        // Create the User
         $user = User::create([
-            'username' => $request->input('user.username'),
-            'password' => bcrypt($request->input('user.password')),
-            'email' => $request->input('user.email'),
+            'email' => $userData['email'],
+            'password' => $userData['password'],
+            'username' => $userData['username'],
         ]);
 
-        // Create the InstitutionAdmin linked to the new user
-        $institutionAdmin = InstitutionAdmin::create([
+        $bankAdmin = InstitutionAdmin::create([
             'user_id' => $user->id,
             'institution_id' => $request->institution_id,
             'name' => $request->name,
-            'title' => $request->title,
+            'title' => $request->title, 
         ]);
 
-        return response()->json($institutionAdmin->load(['user', 'institution']), 201);
+        return response()->json($bankAdmin, 201);
     }
 
     /**

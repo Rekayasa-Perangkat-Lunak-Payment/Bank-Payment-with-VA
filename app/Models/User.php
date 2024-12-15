@@ -22,29 +22,35 @@ class User extends Authenticatable
         'is_deleted',
     ];
 
+    // Mutator for password hashing
     public function setPasswordAttribute($value)
     {
         $this->attributes['password'] = Hash::make($value);
     }
 
+    // Relationship with BankAdmin
     public function bankAdmin()
     {
         return $this->hasOne(BankAdmin::class);
     }
 
+    // Relationship with InstitutionAdmin
     public function institutionAdmin()
     {
         return $this->hasOne(InstitutionAdmin::class);
     }
 
+    // Determine the role based on the relationships
     public function getRoleAttribute()
     {
-        if ($this->adminBank) {
+        if ($this->bankAdmin) {
             return 'bank_admin';
         }
+
         if ($this->institutionAdmin) {
             return 'institution_admin';
         }
-        return 'users'; // Default role or fallback
+
+        return 'user'; // Default role if no admin roles are present
     }
 }

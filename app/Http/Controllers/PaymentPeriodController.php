@@ -109,4 +109,13 @@ class PaymentPeriodController extends Controller
             'message' => 'Payment period deleted successfully'
         ]);
     }
+
+    public function getPaymentPeriodsByInstitution($institutionId)
+    {
+        $paymentPeriods = PaymentPeriod::where('institution_id', $institutionId)
+            ->orderBy('year', 'desc')
+            ->orderBy('month', 'desc')
+            ->get();
+        return response()->json($paymentPeriods);
+    }
 }

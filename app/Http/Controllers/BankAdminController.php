@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use App\Models\BankAdmin;
+use App\Models\User;
+
 class BankAdminController extends Controller
 {
     /**
@@ -14,7 +16,9 @@ class BankAdminController extends Controller
      */
     public function index()
     {
-        $bankAdmins = BankAdmin::where('is_deleted', false)->get();
+        $bankAdmins = BankAdmin::with(['user' => function ($query) {
+            $query->where('is_deleted', false);
+        }])->get();
         return response()->json($bankAdmins);
     }
 
@@ -27,17 +31,37 @@ class BankAdminController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|unique:bank_admins,username',
-            'password' => 'required|string|min:8',
+            'user.username' => 'required|string|unique:users,username',
+            'user.email' => 'required|email|unique:users,email',
+            'user.password' => 'required|string|min:8',
+            'name' => 'required|string',
+            'nik' => 'required|string',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $bankAdmin = BankAdmin::create($request->only(['username', 'password']));
+        // Extract user fields from the request
+        $userData = $request->get('user');
+
+        // Create the User
+        $user = User::create([
+            'email' => $userData['email'],
+            'password' => $userData['password'],
+            'username' => $userData['username'],
+        ]);
+
+        // Create the BankAdmin with the user_id relationship
+        $bankAdmin = BankAdmin::create([
+            'user_id' => $user->id,
+            'name' => $request->name,
+            'nik' => $request->nik,
+        ]);
+
         return response()->json($bankAdmin, 201);
     }
+
 
     /**
      * Display the specified Bank admin.
@@ -84,7 +108,7 @@ class BankAdminController extends Controller
             $bankAdmin->username = $request->username;
         }
         if ($request->has('password')) {
-            $bankAdmin->password = $request->password; // Will trigger setPasswordAttribute to hash
+            $bankAdmin->password = $request->password;
         }
         $bankAdmin->save();
 

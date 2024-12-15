@@ -17,27 +17,14 @@ class PageController extends Controller
 {
     public function showloginPage()
     {
-        return view('pages.login'); // You can change this to the actual login page view name.
+        return view('pages.login');
     }
 
     public function dashboardPage()
     {
-        // dd(Auth::user());
-        // if (Auth::user()->role == 'bank_admin') {
-        //     return view('pages.dashboardBank');
-        // }else if (Auth::user()->role == 'institution_admin') {
-        //     return view('pages.dashboardInstitution');
-        // }else{
-        //     return view('pages.login');
-        // }
-        $active_va = VirtualAccount::where('is_active', 1)->where('expired_at', '>', date('Y-m-d'))->count();
         $payment_period = PaymentPeriod::where('month', date('m'))->select('id', 'semester', 'year', 'month')->first();
-        $active_virtual_accounts = VirtualAccount::with(['student.institution'])
-            ->where('is_active', true)
-            ->where('expired_at', '>', date('Y-m-d'))->get();
 
-
-        return view('pages.dashboardInstitution', compact('active_va', 'payment_period', 'virtual_account_students'));
+        return view('pages.dashboard', compact('payment_period'));
     }
 
     public function settingsPage()
