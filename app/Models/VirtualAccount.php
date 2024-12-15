@@ -18,6 +18,7 @@ class VirtualAccount extends Model
         'total_amount'
     ];
 
+    
     public function invoice()
     {
         return $this->belongsTo(Invoice::class);

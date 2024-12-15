@@ -9,6 +9,9 @@ use App\Http\Controllers\InstitutionAdminController;
 use App\Models\Institution;
 use App\Models\InstitutionAdmin;
 use App\Models\Transaction;
+use App\Models\VirtualAccount;
+use App\Models\PaymentPeriod;
+use App\Models\Invoice;
 
 class PageController extends Controller
 {
@@ -27,7 +30,14 @@ class PageController extends Controller
         // }else{
         //     return view('pages.login');
         // }
-        return view('pages.dashboardInstitution');
+        $active_va = VirtualAccount::where('is_active', 1)->where('expired_at', '>', date('Y-m-d'))->count();
+        $payment_period = PaymentPeriod::where('month', date('m'))->select('id', 'semester', 'year', 'month')->first();
+        $active_virtual_accounts = VirtualAccount::with(['student.institution'])
+            ->where('is_active', true)
+            ->where('expired_at', '>', date('Y-m-d'))->get();
+
+
+        return view('pages.dashboardInstitution', compact('active_va', 'payment_period', 'virtual_account_students'));
     }
 
     public function settingsPage()

@@ -30,4 +30,9 @@ class Invoice extends Model
     {
         return $this->hasMany(InvoiceItem::class);
     }
+
+    public function virtualAccount()
+    {
+        return $this->hasOne(VirtualAccount::class, 'invoice_id');
+    }
 }
